@@ -19,9 +19,20 @@
         <!-- <a :href="link">More products like this.</a>   ЗАДАНИЕ 2 -->
         <div class="product-info">
             <h1>{{ product }}</h1>
+            <p v-if="inStock">In Stock</p>
+            <p v-else>Out of Stock</p>
+            <ul>
+                <li v-for="detail in details">{{ detail }}</li>
+            </ul>
+            <div v-for="variant in variants" :key="variant.variantId">
+                <p>{{ variant.variantColor }}</p>
+            </div>
+            <!--
+            <div v-for="size in sizes" :key="sizes.size">   ЗАДАНИЕ 4
+                <p>{{ size.variantColor }}</p>
+            </div>
+            -->
         </div>
-        <p v-if="inStock">In Stock</p>
-        <p v-else>Out of Stock</p>
         <!-- <span v-show="onSale"> On Sale </span> ЗАДАНИЕ 3 -->
     </div>
 </div>
