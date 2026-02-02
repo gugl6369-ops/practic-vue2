@@ -12,17 +12,17 @@
 </head>
 <body>
 <div id="app">
-
     <div class="product">
-
         <div class="product-image">
             <img alt="#" src="" :src="image" :alt="altText"/>
         </div>
-        <a :href="link">More products like this.</a> <!--  ЗАДАНИЕ 2 -->
+        <!-- <a :href="link">More products like this.</a>   ЗАДАНИЕ 2 -->
         <div class="product-info">
             <h1>{{ product }}</h1>
         </div>
-
+        <p v-if="inStock">In Stock</p>
+        <p v-else>Out of Stock</p>
+        <!-- <span v-show="onSale"> On Sale </span> ЗАДАНИЕ 3 -->
     </div>
 </div>
 </body>
