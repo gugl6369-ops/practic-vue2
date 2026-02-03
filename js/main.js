@@ -24,18 +24,18 @@ let app = new Vue({
             }
         ],
         cart: 0,
-        methods: {
-            addToCart() {
-                this.cart += 1
-            },
-            // removeFromCart(){
-            //     if (cart > 0) this.cart -= 1;      ЗАДАНИЕ 5
-            // }
-        },
         updateProduct(variantImage) {
             this.image = variantImage
         }
         // sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'], ЗАДАНИЕ 4
 
-    }
+    },
+    methods: {
+        addToCart() {
+            this.cart += 1
+        },
+        removeFromCart(){
+            if (this.cart > 0) this.cart -= 1;
+        }
+    },
 })
