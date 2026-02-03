@@ -57,10 +57,7 @@ Vue.component('product', {
             >
                 Add to cart
             </button>
-            <div class="cart">
-                <p>Cart({{ cart }})</p>
-            </div>
-<!--        <button v-show="cart > 0" v-on:click="removeFromCart">Remove from cart</button>  ЗАДАНИЕ 5-->
+        <button v-on:click="remoteCart">Remove from cart</button>  
         </div>
 
         <!-- <span v-show="onSale"> On Sale </span> ЗАДАНИЕ 3 -->
@@ -92,17 +89,19 @@ Vue.component('product', {
                     variantQuantity: 0,
                 }
             ],
-            cart: 0,
             // sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'], ЗАДАНИЕ 4
         }
     },
     methods: {
-        addToCart() {
-            this.cart += 1
-        },
         // removeFromCart(){
         //     if (this.cart > 0) this.cart -= 1; ЗАДАНИЕ 5
         // },
+        addToCart() {
+            this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
+        },
+        remoteCart() {
+            this.$emit('delete-to-cart', this.variants[this.selectedVariant].variantId);
+        },
         updateProduct(index) {
             this.selectedVariant = index;
             console.log(index);
@@ -136,8 +135,17 @@ Vue.component('product', {
 let app = new Vue({
     el: '#app',
     data: {
-        premium: true
+        premium: true,
+        cart: [],
     },
+    methods: {
+        updateCart(id) {
+            this.cart.push(id);
+        },
+        // remoteCart() {
+        //     this.cart.pop();      ЗАДАНИЕ 9
+        // },
+    }
 })
 
 
