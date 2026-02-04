@@ -16,35 +16,39 @@ Vue.component('product-tabs', {
         }
     },
     template: `
-     <div>   
-       <ul>
-         <span class="tab"
-               :class="{ activeTab: selectedTab === tab }"
-               v-for="(tab, index) in tabs"
-               @click="selectedTab = tab"
-         >{{ tab }}</span>
-       </ul>
-       <div v-show="selectedTab === 'Reviews'">
-         <p v-if="!reviews.length">There are no reviews yet.</p>
-         <ul>
-           <li v-for="review in reviews">
-           <p>{{ review.name }}</p>
-           <p>Rating: {{ review.rating }}</p>
-           <p>{{ review.review }}</p>
-           </li>
-         </ul>
-       </div>
-       <div v-show="selectedTab === 'Make a Review'">
-         <product-review></product-review>
-       </div>
-       <div v-show="selectedTab === 'Shipping'">
-              <p>Shipping: {{ shipping }}</p>  
-       </div>
-       <div v-show="selectedTab === 'Details'">
-              <product-details :details="details"></product-details> 
-       </div>
-     </div>
-`,
+         <div>   
+           <ul>
+             <span class="tab"
+                   :class="{ activeTab: selectedTab === tab }"
+                   v-for="(tab, index) in tabs"
+                   @click="selectedTab = tab"
+             >
+                    {{ tab }}
+             </span>
+           </ul>
+           <div v-show="selectedTab === 'Reviews'">
+             <p v-if="!reviews.length">
+                There are no reviews yet.
+             </p>
+             <ul>
+               <li v-for="review in reviews">
+               <p>{{ review.name }}</p>
+               <p>Rating: {{ review.rating }}</p>
+               <p>{{ review.review }}</p>
+               </li>
+             </ul>
+           </div>
+           <div v-show="selectedTab === 'Make a Review'">
+             <product-review></product-review>
+           </div>
+           <div v-show="selectedTab === 'Shipping'">
+                  <p>Shipping: {{ shipping }}</p>  
+           </div>
+           <div v-show="selectedTab === 'Details'">
+                  <product-details :details="details"></product-details> 
+           </div>
+         </div>
+    `,
     data() {
         return {
             tabs: ['Reviews', 'Make a Review', 'Shipping', 'Details'],
@@ -60,54 +64,53 @@ Vue.component('product-review', {
             required: true
         }
     },
-    template: `
-    <form class="review-form" @submit.prevent="onSubmit">
-     <p>
-       <label for="name">Name:</label>
-       <input id="name" v-model="name" placeholder="name">
-     </p>
-    
-     <p>
-       <label for="review">Review:</label>
-       <textarea id="review" v-model="review"></textarea>
-     </p>
-    
-     <p>
-       <label for="rating">Rating:</label>
-       <select id="rating" v-model.number="rating">
-         <option>5</option>
-         <option>4</option>
-         <option>3</option>
-         <option>2</option>
-         <option>1</option>
-       </select>
-     </p>
-    
-    <div>
-        <p> Would you recommend this product?</p>
-        <label >
-            <input v-model="recomend" type="radio" name="1" value="yes">
-            yes
-        </label>
-        <label >
-            <input v-model="recomend" type="radio" name="1" value="no">
-            no
-        </label>
-    </div>
-     <p>
-       <input type="submit" value="Submit"> 
-     </p>
-    <p v-if="errors.length">
-        <b>Please correct the following error(s):</b>
-        <ul>
-           <li v-for="error in errors">{{ error }}</li>
-        </ul>
-    </p>
-    
-    
-    </form>
+    template:
+        `
+        <form class="review-form" @submit.prevent="onSubmit">
+         <p>
+           <label for="name">Name:</label>
+           <input id="name" v-model="name" placeholder="name">
+         </p>
+        
+         <p>
+           <label for="review">Review:</label>
+           <textarea id="review" v-model="review"></textarea>
+         </p>
+        
+         <p>
+           <label for="rating">Rating:</label>
+           <select id="rating" v-model.number="rating">
+             <option>5</option>
+             <option>4</option>
+             <option>3</option>
+             <option>2</option>
+             <option>1</option>
+           </select>
+         </p>
+        
+        <div>
+            <p> Would you recommend this product?</p>
+            <label >
+                <input v-model="recomend" type="radio" name="1" value="yes">
+                yes
+            </label>
+            <label >
+                <input v-model="recomend" type="radio" name="1" value="no">
+                no
+            </label>
+        </div>
+         <p>
+           <input type="submit" value="Submit"> 
+         </p>
+        <p v-if="errors.length">
+            <b>Please correct the following error(s):</b>
+            <ul>
+               <li v-for="error in errors">{{ error }}</li>
+            </ul>
+        </p>
+        </form>
+        `,
 
- `,
     data() {
         return {
             name: null,
@@ -159,11 +162,12 @@ Vue.component('product-details', {
             required: true
         }
     },
-    template: `
-    <ul>
-        <li v-for="detail in details">{{ detail }}</li>
-    </ul>
- `,
+    template:
+        `
+        <ul>
+            <li v-for="detail in details">{{ detail }}</li>
+        </ul>
+        `,
 })
 
 
@@ -174,52 +178,37 @@ Vue.component('product', {
             required: true
         }
     },
-    template: `
-   <div class="product">
-        <div class="product-image">
-            <img alt="#" src="" :src="image" :alt="altText"/>
-        </div>
-        <!-- <a :href="link">More products like this.</a>   ЗАДАНИЕ 2 -->
-        <div class="product-info">
-            <p>User is premium: {{ premium }}</p>
-            <h1>{{ title }}</h1>
-<!--            <p>{{sale}}</p>   ЗАДАНИЕ 5 -->
-            <p :style="inStock ? '' : 'text-decoration: line-through' " > <!-- ЗАДАНИЕ 6 -->
-                {{ inStock ? 'In stock' : 'Out of Stock' }}
-            </p>
-           
-            
-            
-            
-            <div
+    template:
+        `
+       <div class="product">
+            <div class="product-image">
+                <img alt="#" src="" :src="image" :alt="altText"/>
+            </div>
+            <div class="product-info">
+                <p>User is premium: {{ premium }}</p>
+                <h1>{{ title }}</h1>
+                <p :style="inStock ? '' : 'text-decoration: line-through' " >
+                    {{ inStock ? 'In stock' : 'Out of Stock' }}
+                </p>
+                <div
                     class="color-box"
                     v-for="(variant, index) in variants"
                     :key="variant.variantId"
                     :style="{ backgroundColor:variant.variantColor }"
                     @mouseover="updateProduct(index)"
-            >
+                >
+                </div>
+                <button v-on:click="addToCart"
+                        :disabled="!inStock"
+                        :class="{ disabledButton: !inStock }"
+                >
+                    Add to cart
+                </button>
+         
+            <product-tabs :shipping="shipping" :reviews="reviews" :details="details"></product-tabs>
             </div>
-            <!--
-            <div v-for="size in sizes" :key="sizes.size">   ЗАДАНИЕ 4
-                <p>{{ size }}</p>
-            </div>
-            -->
-            <button v-on:click="addToCart"
-                    :disabled="!inStock"
-                    :class="{ disabledButton: !inStock }"
-            >
-                Add to cart
-            </button>
-<!--        <button v-on:click="remoteCart">Remove from cart</button>  -->
-            
-        
-        <product-tabs :shipping="shipping" :reviews="reviews" :details="details"></product-tabs>
         </div>
-
-        <!-- <span v-show="onSale"> On Sale </span> ЗАДАНИЕ 3 -->
-        
-    </div>
-    `,
+        `,
     data() {
         return {
             product: "Socks",
@@ -227,9 +216,6 @@ Vue.component('product', {
             description: 'A pair of warm, fuzzy socks',
             selectedVariant: 0,
             altText: "A pair of socks",
-            // link: "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks",  ЗАДАНИЕ 2
-            inStock: true,
-            // onSale: true,    ЗАДАНИЕ 3, 5
             details: ['80% cotton', '20% polyester', 'Gender-neutral'],
             reviews: [],
             variants: [
@@ -247,13 +233,9 @@ Vue.component('product', {
                     variantQuantity: 0,
                 }
             ],
-            // sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'], ЗАДАНИЕ 4
         }
     },
     methods: {
-        // removeFromCart(){
-        //     if (this.cart > 0) this.cart -= 1; ЗАДАНИЕ 5
-        // },
         addToCart() {
             this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
         },
@@ -280,9 +262,6 @@ Vue.component('product', {
         inStock(){
             return this.variants[this.selectedVariant].variantQuantity
         },
-        // sale() { ЗАДАНИЕ 7
-        //     return (this.onSale ? 'skidka net ' : 'skidka est ') + ' this ' + this.product + ' for brand: ' + this.brand;
-        // },
         shipping() {
             if (this.premium) {
                 return "Free";
@@ -305,9 +284,6 @@ let app = new Vue({
         updateCart(id) {
             this.cart.push(id);
         },
-        // remoteCart() {
-        //     this.cart.pop();      ЗАДАНИЕ 9
-        // },
     }
 })
 
