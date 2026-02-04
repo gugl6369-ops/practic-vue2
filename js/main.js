@@ -90,12 +90,12 @@ Vue.component('product-review', {
         
         <div>
             <p> Would you recommend this product?</p>
-            <label >
-                <input v-model="recomend" type="radio" name="1" value="yes">
+            <label>
+                <input v-model="recommend" type="radio" name="1" value="yes" :disabled="rating < 4 || rating == null">
                 yes
             </label>
             <label >
-                <input v-model="recomend" type="radio" name="1" value="no">
+                <input v-model="recommend" type="radio" name="1" value="no" :disabled="rating > 3 || rating == null">
                 no
             </label>
         </div>
@@ -117,28 +117,28 @@ Vue.component('product-review', {
             review: null,
             rating: null,
             errors: [],
-            recomend: null,
+            recommend: null,
         }
     },
     methods:{
         onSubmit() {
-            if(this.name && this.review && this.rating && this.recomend) {
+            if(this.name && this.review && this.rating && this.recommend) {
                 let productReview = {
                     name: this.name,
                     review: this.review,
                     rating: this.rating,
-                    recomend: this.recomend,
+                    recommend: this.recommend,
                 }
                 eventBus.$emit('review-submitted', productReview)
                 this.name = null
                 this.review = null
                 this.rating = null
-                this.recomend = null
+                this.recommend = null
             } else {
                 if(!this.name) this.errors.push("Name required.")
                 if(!this.review) this.errors.push("Review required.")
                 if(!this.rating) this.errors.push("Rating required.")
-                if(!this.recomend) this.errors.push("Recomend required.")
+                if(!this.recommend) this.errors.push("Recomend required.")
             }
         },
         data() {
@@ -147,8 +147,7 @@ Vue.component('product-review', {
                 review: null,
                 rating: null,
                 errors: [],
-                recomend: null,
-
+                recommend: null,
             }
         },
 
