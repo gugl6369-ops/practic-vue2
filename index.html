@@ -10,12 +10,19 @@
     <link rel="stylesheet" href="css/main.css">
     <title>Product App</title>
 </head>
-<body>
-<div id="app">
-    <div class="cart">
-        <p>Cart({{ cart.length }})</p>
+<body style="background-color: honeydew">
+    <div
+        id="app" style=" display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; position: relative;"
+        >
+        <div
+            class="cart"
+            style="position: sticky ;display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 100%; top: 0; background-color: #9cc5e6; cursor: pointer"
+            v-on:click="openCart()"
+            >
+            <p> Cart({{ cart.length }}) </p>
+        </div>
+        <basket :style="{display :modal ? 'flex' : 'none'}" :cart="cart"></basket>
+        <product :premium="premium" @add-to-cart="updateCart" ></product>
     </div>
-    <product :premium="premium" @add-to-cart="updateCart" ></product>
-</div>
 </body>
 </html>

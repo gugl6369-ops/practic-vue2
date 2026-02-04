@@ -1,5 +1,50 @@
 let eventBus = new Vue()
 
+Vue.component('basket', {
+    props: {
+        cart:{
+            type: Array,
+            required: true,
+        },
+    },
+    template: `
+                <div 
+                    style="width: 500px; max-height: 500px; background-color: #c2e4ea; 
+                    position: absolute; padding: 20px; border-radius: 20px; flex-direction: column;
+                    overflow: auto">
+                    <h3>Корзина</h3>
+                    <div style="display: flex; flex-direction: column">
+                    <template v-for="item in cart" :key="item.variant.variantId">
+                        <basket-cart :cart="item"></basket-cart>
+                    </template>
+                    </div>
+                    
+                </div>
+              `
+})
+
+
+Vue.component('basket-cart', {
+    props: {
+        cart:{
+            type: Object,
+            required: true,
+        },
+    },
+    template: `
+                <article style="display: flex">
+                    <div>
+                        <img style="width: 100px; height: auto" :src="cart.variant.variantImage" alt="photo product"/>
+                    </div>
+                    <div>
+                        <p>{{ cart.product }}</p>
+                        <p>Доставка: {{ cart.shipping }} рублей</p>
+                    </div>
+                    <div></div>
+                </article>
+              `
+})
+
 Vue.component('product-tabs', {
     props: {
         shipping: {
@@ -42,7 +87,7 @@ Vue.component('product-tabs', {
              <product-review></product-review>
            </div>
            <div v-show="selectedTab === 'Shipping'">
-                  <p>Shipping: {{ shipping }}</p>  
+                  <p>Shipping: {{ shipping ? shipping : 'Free' }}</p>  
            </div>
            <div v-show="selectedTab === 'Details'">
                   <product-details :details="details"></product-details> 
@@ -229,17 +274,22 @@ Vue.component('product', {
                     variantId: 2235,
                     variantColor: 'blue',
                     variantImage: "./assets/vmSocks-blue-onWhite.jpg",
-                    variantQuantity: 0,
+                    variantQuantity: 5,
                 }
             ],
         }
     },
     methods: {
         addToCart() {
-            this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
+            this.variantQuantity
+            this.$emit('add-to-cart', {
+                product: this.product,
+                shipping: this.shipping,
+                variant: this.variants[this.selectedVariant],
+            });
         },
         remoteCart() {
-            this.$emit('delete-to-cart', this.variants[this.selectedVariant].variantId);
+            this.$emit('delete-to-cart', this.variants[this.selectedVariant]);
         },
         updateProduct(index) {
             this.selectedVariant = index;
@@ -263,7 +313,7 @@ Vue.component('product', {
         },
         shipping() {
             if (this.premium) {
-                return "Free";
+                return 0;
             } else {
                 return 2.99
             }
@@ -278,10 +328,16 @@ let app = new Vue({
     data: {
         premium: true,
         cart: [],
+        modal: false,
     },
     methods: {
-        updateCart(id) {
-            this.cart.push(id);
+        updateCart(carts) {
+            this.cart.push(carts);
+            console.log(this.cart);
+        },
+        openCart() {
+            this.modal = !this.modal;
+            console.log(this.modal);
         },
     }
 })
