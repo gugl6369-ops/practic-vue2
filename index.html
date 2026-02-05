@@ -11,7 +11,12 @@
     <title>Document</title>
 </head>
 <body>
-    <board></board>
-    <cart :cart="cart"></cart>
+    <div id="app" class="content">
+        <div class="boardBlock">
+        <template v-for="(board, index ) in boards">
+            <board :cart="cart" :index="index" ></board>
+        </template>
+        </div>
+    </div>
 </body>
 </html>
