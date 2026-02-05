@@ -19,3 +19,17 @@
     min-height: 300px;
     border: 1px solid black;
 }
+.icon{
+    width: 30px;
+    height: 40px;
+}
+.cart_header{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.cart__list{
+    display: flex;
+    flex-direction: column;
+}
