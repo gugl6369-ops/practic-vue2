@@ -41,11 +41,10 @@ Vue.component('cart', {
                     <div class="cart_header">
                         <img class="icon" src="../assets/icon.png"> 
                         <p> {{cart.name}} </p>
-                        <p>{{cart.status}}</p>
                     </div> 
-                    <div>
+                    <div class="cart__content">
                         <div class="task">
-                            <p>{{4}} of {{5}}</p> 
+                            <p>{{cart.point.filter((i) => i.done === true ).length}} of {{cart.point.length}}</p> 
                             <label>
                                 <progress :value="progress" max="100"></progress>
                             </label>
@@ -98,9 +97,13 @@ Vue.component('board', {
     },
     template: `
                 <div class="board">
-                     <template v-if="cart.length">
+                     <div class="board__header">
+                        <h1>Доска {{index}}</h1>
+                        <p>{{getCart().length}}</p>
+                     </div>
+                     <template v-if="getCart().length">
                      <p>{{index}}</p>
-                        <div>
+                        <div class="board__list">
                             <template v-for="item in getCart()">
                                 <cart :cart="item"></cart>
                             </template>
