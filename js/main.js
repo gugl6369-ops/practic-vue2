@@ -34,6 +34,13 @@ Vue.component('cart', {
         cart:{
             type: Array,
             required: true
+        },
+        check:{
+            type: Boolean,
+            required: true
+        },
+        block:{
+            type: Boolean,
         }
     },
     template: `
@@ -51,10 +58,10 @@ Vue.component('cart', {
                             <p> {{progress}}% </p>
                         </div>
                         <div class="cart__list">
-                            <template v-for="(i, index) in cart.point" :key="i.id">
+                            <template v-for="(i, index) in cart.point" :key="index">
                                 <label> 
                                     {{i.name}}
-                                    <input v-model="i.done" type="checkbox">
+                                    <input v-model="i.done" type="checkbox" :disabled="check || block" >
                                 </label>                                   
                             </template>
                         </div> 
@@ -71,7 +78,7 @@ Vue.component('cart', {
     },
     computed: {
         progress(){
-            if (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100 < 50) {
+            if (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100 < 50 && ) {
                 this.cart.status = 1;
             }
             else if (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100 > 49 && this.cart.point.filter((i) => i.done === true ).length /this.cart.point.length  * 100 !== 100) {
@@ -81,7 +88,8 @@ Vue.component('cart', {
                 this.cart.status = 3;
             }
             return (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100).toFixed(0)
-        }
+        },
+
     }
 
 })
@@ -93,34 +101,47 @@ Vue.component('board', {
         },
         index:{
             type: Number,
+        },
+        board: {
+            type: Array,
+        },
+        block:{
+            type: Boolean,
         }
     },
     template: `
                 <div class="board">
+                {{check}} 
                      <div class="board__header">
                         <h1>Доска {{index}}</h1>
                         <p>{{getCart().length}}</p>
                      </div>
                      <template v-if="getCart().length">
-                     <p>{{index}}</p>
                         <div class="board__list">
                             <template v-for="item in getCart()">
-                                <cart :cart="item"></cart>
+                                <cart :cart="item" :check="check" :block="block"></cart>
                             </template>
                         </div>
                      </template>
                      <template v-else>
                         <p>нет ничего</p>
                      </template>
+                    <div v-show="!(board.max == getCart().length) && board.id == 1">
+                        <button class="board__button">Добавить задачу</button>
+                    </div>
                 </div>
               `,
     data() {
-
     },
     methods: {
         getCart(){
-            return this.cart.filter(item=> item.status == this.index );
+            return this.cart.filter(item=> item.status == this.board.id );
         }
+    },
+    computed:{
+        check(){
+            return (this.cart.filter(item=> item.status == this.board.id + 1).length >= 5 && this.index === 0);
+        },
     }
 })
 
@@ -135,11 +156,100 @@ let app = new Vue({
                         id: 1,
                         name: '11',
                         done: false,
+                        max: 3,
                     },
                     {
                         id: 2,
                         name: '12',
                         done: true,
+                        max: 5,
+                    },
+                    {
+                        id: 3,
+                        name: '13',
+                        done: false,
+                    },
+                    {
+                        id: 4,
+                        name: '14',
+                        done: false,
+                    }
+                ],
+                status: 1,
+                check: 2,
+            },
+            {
+                name: 'имя',
+                point: [
+                    {
+                        id: 1,
+                        name: '11',
+                        done: false,
+                        max: 3,
+                    },
+                    {
+                        id: 2,
+                        name: '12',
+                        done: true,
+                        max: 5,
+                    },
+                    {
+                        id: 3,
+                        name: '13',
+                        done: false,
+                    },
+                    {
+                        id: 4,
+                        name: '14',
+                        done: false,
+                    }
+                ],
+                status: 1,
+                check: 2,
+            },
+            {
+                name: 'имя',
+                point: [
+                    {
+                        id: 1,
+                        name: '11',
+                        done: false,
+                        max: 3,
+                    },
+                    {
+                        id: 2,
+                        name: '12',
+                        done: true,
+                        max: 5,
+                    },
+                    {
+                        id: 3,
+                        name: '13',
+                        done: false,
+                    },
+                    {
+                        id: 4,
+                        name: '14',
+                        done: false,
+                    }
+                ],
+                status: 1,
+                check: 2,
+            },
+            {
+                name: 'имя',
+                point: [
+                    {
+                        id: 1,
+                        name: '11',
+                        done: false,
+                        max: 3,
+                    },
+                    {
+                        id: 2,
+                        name: '12',
+                        done: true,
+                        max: 5,
                     },
                     {
                         id: 3,
@@ -208,11 +318,29 @@ let app = new Vue({
                 status: 3,
             },
         ],
-        boards: {
-            1: [],
-            2: [],
-            3: [],
-        },
+        boards: [
+            {
+                id: 1,
+                name: 'Первая',
+                done: false,
+                max: 3,
+                block: false,
+            },
+            {
+                id: 2,
+                name: 'Вторая',
+                done: false,
+                max: 5,
+                block: false,
+            },
+            {
+                id: 3,
+                name: 'Третья',
+                done: false,
+                max: 1000000,
+                block: true,
+            },
+        ],
     },
     methods: {
         addCart(cart){
