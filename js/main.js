@@ -41,6 +41,9 @@ Vue.component('cart', {
         },
         block:{
             type: Boolean,
+        },
+        last:{
+            type: Boolean,
         }
     },
     template: `
@@ -61,7 +64,14 @@ Vue.component('cart', {
                             <template v-for="(i, index) in cart.point" :key="index">
                                 <label> 
                                     {{i.name}}
+                                    {{last}}
+                                    {{block}}
+                                    {{check}}
+                                    {{(cart.point.filter((i) => i === true).length/cart.point.length * 100 >= 50)}}
                                     <input v-model="i.done" type="checkbox" :disabled="check || block" >
+<!--                                   условие оющие чеки у карточки соединить и проверить, проходят ли они в слудующую доску и проверить, возможный переход на предыдущую   -->
+<!--            - информация о картах/досках, (либо создать пропсы next и last для отслеживания перемещения), относительно
+           прошлых переменных проверить карточку и ее check на возможности                  -->
                                 </label>                                   
                             </template>
                         </div> 
@@ -78,7 +88,7 @@ Vue.component('cart', {
     },
     computed: {
         progress(){
-            if (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100 < 50 && ) {
+            if (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100 < 50) {
                 this.cart.status = 1;
             }
             else if (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100 > 49 && this.cart.point.filter((i) => i.done === true ).length /this.cart.point.length  * 100 !== 100) {
@@ -89,9 +99,7 @@ Vue.component('cart', {
             }
             return (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100).toFixed(0)
         },
-
     }
-
 })
 
 Vue.component('board', {
@@ -119,7 +127,7 @@ Vue.component('board', {
                      <template v-if="getCart().length">
                         <div class="board__list">
                             <template v-for="item in getCart()">
-                                <cart :cart="item" :check="check" :block="block"></cart>
+                                <cart :cart="item" :check="check" :last="last" :block="block"></cart>
                             </template>
                         </div>
                      </template>
@@ -142,6 +150,21 @@ Vue.component('board', {
         check(){
             return (this.cart.filter(item=> item.status == this.board.id + 1).length >= 5 && this.index === 0);
         },
+        last(){
+            if (this.index === 2){
+                if (this.cart.filter(item=> item.status == this.board.id - 1).length >= 5){
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+
+        },
+
     }
 })
 
