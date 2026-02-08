@@ -1,32 +1,66 @@
 let eventBus = new Vue()
 
-Vue.component('form', {
+Vue.component('custom-form', {
+    props: {
+        forms:{
+            type: Boolean,
+            required: true
+        }
+    },
     template: `
-                 <div>
-                    <form class="form">
-                        <label for="name">Name
-                            <input type="text" class="form__input">
+                 <div class="addCart">
+                    <div @click="modal" class="overlay"></div>
+                    <form class="form" @submit.prevent="handleSubmit">
+                        <p>СОЗАДНИЕ КАРТОЧКИ</p>
+                        <label class="from__header" for="name">Название
+                            <input type="text" v-model="formData.name" class="form__input" required>
                         </label>
-                        <div>
-                            <ladel @click="form__label">
-                                <input type="text" v-model="name" class="form__input">
-                            </ladel>    
+                        <div class="form__block">
+                            <label v-for="(item, index) in countPoint">
+                                {{index+1}}
+                                <input type="text" v-model="formData.point[index]"  class="form__input"  required>
+                            </label>    
+                            <button v-show="countPoint<5" @click="pointAdd+=1" type="button">Добавить задание</button>
                         </div>
-                        <button type="button">Добавить чекпоинт</button>
-                        <input>
+                        <button type="submit">Сохранить</button>
                     </form>
                  </div>
               `,
     data(){
         return{
-            form:{
-
+            pointAdd: 0,
+            model: 10,
+            formData: {
+                name: '',
+                point:['', '', ''],
+                status: 1,
+                check: false
             }
         }
     },
-    mounted(){
-        eventBus.$on('add-cart', this.addCart);
-    }
+    methods:{
+        handleSubmit() {
+            console.log(this.formData.name);
+            eventBus.$emit('add-cart', this.formData);
+            eventBus.$emit('close-modal');
+            this.formData ={
+                name: '',
+                    point:['', '', ''],
+                    status: 1,
+                    check: false
+            }
+            this.pointAdd = 0
+        },
+        modal() {
+            eventBus.$emit('close-modal');
+        }
+
+    },
+    computed:{
+        countPoint(){
+            return 3 + this.pointAdd;
+        }
+    },
 })
 
 Vue.component('cart', {
@@ -63,15 +97,8 @@ Vue.component('cart', {
                         <div class="cart__list">
                             <template v-for="(i, index) in cart.point" :key="index">
                                 <label> 
-                                    {{i.name}}
-                                    {{last}}
-                                    {{block}}
-                                    {{check}}
-                                    {{(cart.point.filter((i) => i === true).length/cart.point.length * 100 >= 50)}}
                                     <input v-model="i.done" type="checkbox" :disabled="check || block" >
-<!--                                   условие оющие чеки у карточки соединить и проверить, проходят ли они в слудующую доску и проверить, возможный переход на предыдущую   -->
-<!--            - информация о картах/досках, (либо создать пропсы next и last для отслеживания перемещения), относительно
-           прошлых переменных проверить карточку и ее check на возможности                  -->
+                                    {{i.name}}
                                 </label>                                   
                             </template>
                         </div> 
@@ -134,8 +161,8 @@ Vue.component('board', {
                      <template v-else>
                         <p>нет ничего</p>
                      </template>
-                    <div v-show="!(board.max == getCart().length) && board.id == 1">
-                        <button class="board__button">Добавить задачу</button>
+                    <div v-show="!(board.max <= getCart().length) && board.id == 1">
+                        <button @click="modal" class="board__button">Добавить задачу</button>
                     </div>
                 </div>
               `,
@@ -144,6 +171,9 @@ Vue.component('board', {
     methods: {
         getCart(){
             return this.cart.filter(item=> item.status == this.board.id );
+        },
+        modal() {
+            eventBus.$emit('close-modal');
         }
     },
     computed:{
@@ -171,119 +201,15 @@ Vue.component('board', {
 let app = new Vue({
     el: '#app',
     data: {
+        forms: true,
         cart: [
             {
                 name: 'имя',
                 point: [
-                    {
-                        id: 1,
-                        name: '11',
-                        done: false,
-                        max: 3,
-                    },
-                    {
-                        id: 2,
-                        name: '12',
-                        done: true,
-                        max: 5,
-                    },
-                    {
-                        id: 3,
-                        name: '13',
-                        done: false,
-                    },
-                    {
-                        id: 4,
-                        name: '14',
-                        done: false,
-                    }
-                ],
-                status: 1,
-                check: 2,
-            },
-            {
-                name: 'имя',
-                point: [
-                    {
-                        id: 1,
-                        name: '11',
-                        done: false,
-                        max: 3,
-                    },
-                    {
-                        id: 2,
-                        name: '12',
-                        done: true,
-                        max: 5,
-                    },
-                    {
-                        id: 3,
-                        name: '13',
-                        done: false,
-                    },
-                    {
-                        id: 4,
-                        name: '14',
-                        done: false,
-                    }
-                ],
-                status: 1,
-                check: 2,
-            },
-            {
-                name: 'имя',
-                point: [
-                    {
-                        id: 1,
-                        name: '11',
-                        done: false,
-                        max: 3,
-                    },
-                    {
-                        id: 2,
-                        name: '12',
-                        done: true,
-                        max: 5,
-                    },
-                    {
-                        id: 3,
-                        name: '13',
-                        done: false,
-                    },
-                    {
-                        id: 4,
-                        name: '14',
-                        done: false,
-                    }
-                ],
-                status: 1,
-                check: 2,
-            },
-            {
-                name: 'имя',
-                point: [
-                    {
-                        id: 1,
-                        name: '11',
-                        done: false,
-                        max: 3,
-                    },
-                    {
-                        id: 2,
-                        name: '12',
-                        done: true,
-                        max: 5,
-                    },
-                    {
-                        id: 3,
-                        name: '13',
-                        done: false,
-                    },
-                    {
-                        id: 4,
-                        name: '14',
-                        done: false,
-                    }
+                    { id: 1, name: '11', done: false },
+                    { id: 2, name: '12', done: false  },
+                    { id: 3, name: '13', done: false },
+                    { id: 4, name: '14', done: false }
                 ],
                 status: 1,
                 check: 2,
@@ -291,87 +217,37 @@ let app = new Vue({
             {
                 name: 'имя2',
                 point: [
-                    {
-                        id: 1,
-                        name: '21',
-                        done: false,
-                    },
-                    {
-                        id: 2,
-                        name: '22',
-                        done: true,
-                    },
-                    {
-                        id: 3,
-                        name: '23',
-                        done: false,
-                    },
-                    {
-                        id: 4,
-                        name: '24',
-                        done: false,
-                    }
+                    { id: 1, name: '21', done: false },
+                    { id: 2, name: '22', done: false },
+                    { id: 3, name: '23', done: false },
+                    { id: 4, name: '24', done: false }
                 ],
                 status: 2,
-            },
-            {
-                name: 'имя3',
-                point: [
-                    {
-                        id: 1,
-                        name: '31',
-                        done: false,
-                    },
-                    {
-                        id: 2,
-                        name: '32',
-                        done: true,
-                    },
-                    {
-                        id: 3,
-                        name: '33',
-                        done: false,
-                    },
-                    {
-                        id: 4,
-                        name: '34',
-                        done: false,
-                    }
-                ],
-                status: 3,
-            },
+            }
         ],
         boards: [
-            {
-                id: 1,
-                name: 'Первая',
-                done: false,
-                max: 3,
-                block: false,
-            },
-            {
-                id: 2,
-                name: 'Вторая',
-                done: false,
-                max: 5,
-                block: false,
-            },
-            {
-                id: 3,
-                name: 'Третья',
-                done: false,
-                max: 1000000,
-                block: true,
-            },
+            { id: 1, name: 'Первая', done: false, max: 3, block: false },
+            { id: 2, name: 'Вторая', done: false, max: 5, block: false },
+            { id: 3, name: 'Третья', done: false, max: 1000000, block: true },
         ],
     },
     methods: {
         addCart(cart){
+            cart.point = cart.point.map((item, index)=>({
+              id: index,
+              name: item,
+              done: false
+            }))
             this.cart.push(cart);
+            console.log(cart);
         },
 
 
     },
+    mounted(){
+        eventBus.$on('add-cart', this.addCart);
+        eventBus.$on('close-modal', () => this.forms = !this.forms);
+    }
 })
 //new Date() + Math.random() * 100
 

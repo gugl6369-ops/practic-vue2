@@ -179,3 +179,61 @@ progress {
     outline: none;
     box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.1);
 }
+
+.content{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.addCart{
+    position: fixed;
+    inset: 0;
+    display: flex;
+    width:100%;
+    height: 100%;
+    z-index: 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.overlay{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.36);
+    z-index: 3;
+}
+.form{
+    background-color: #a78bfa;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: #f8fafc;
+    border-radius: 10px;
+    align-items: center;
+    z-index: 5;
+}
+.form__block{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+}
+.from__header{
+    padding: 8px;
+    display: flex;
+    background-color: rgba(25, 99, 191, 0.38);
+    gap: 15px;
+    border-radius: 10px;
+}
+.from__header > input{
+    border-radius: 10px;
+}
+.form__block > label > input{
+    width: 100%;
+    border-radius: 8px;
+}
