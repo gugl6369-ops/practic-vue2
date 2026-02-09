@@ -12,7 +12,7 @@ Vue.component('custom-form', {
                     <div @click="modal" class="overlay"></div>
                     <form class="form" @submit.prevent="handleSubmit">
                         <p>СОЗАДНИЕ КАРТОЧКИ</p>
-                        <label class="from__header" for="name">Название
+                        <label class="from__header">Название
                             <input type="text" v-model="formData.name" class="form__input" required>
                         </label>
                         <div class="form__block">
@@ -47,7 +47,7 @@ Vue.component('custom-form', {
                 name: '',
                     point:['', '', ''],
                     status: 1,
-                    check: false
+                    date: '',
             }
             this.pointAdd = 0
         },
@@ -69,22 +69,16 @@ Vue.component('cart', {
             type: Array,
             required: true
         },
-        check:{
-            type: Boolean,
-            required: true
-        },
         block:{
-            type: Boolean,
+            type: Array,
         },
-        last:{
-            type: Boolean,
-        }
     },
     template: `
                 <article class="cart">
                     <div class="cart_header">
-                        <img class="icon" src="../assets/icon.png"> 
+                        <img class="icon" src="../assets/icon.png" alt="оконка"> 
                         <p> {{cart.name}} </p>
+                        <p class="cart__date" v-show="cart.date">{{cart.date}}</p>
                     </div> 
                     <div class="cart__content">
                         <div class="task">
@@ -97,7 +91,7 @@ Vue.component('cart', {
                         <div class="cart__list">
                             <template v-for="(i, index) in cart.point" :key="index">
                                 <label> 
-                                    <input v-model="i.done" type="checkbox" :disabled="check || block" >
+                                    <input v-model="i.done" type="checkbox" :disabled="blocked(i.done)" @change="eventBus.$emit('save')" >
                                     {{i.name}}
                                 </label>                                   
                             </template>
@@ -113,19 +107,37 @@ Vue.component('cart', {
             name: 'name',
         }
     },
+    methods: {
+        blocked(i){
+            console.log('Блоки:', (this.cart.point.map((i) => i.done === true).length - 1)/(this.cart.point.length * 100) < 50 )
+            if (this.cart.status === 1 && this.block[1] === false && i === false) {
+                return true
+            }
+            else if (this.cart.status === 2 && this.block[0] === false && i === true) {
+                return true
+            }
+            else if (this.cart.status === 3) {
+                return true
+            }
+        }
+    },
     computed: {
         progress(){
             if (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100 < 50) {
                 this.cart.status = 1;
+                eventBus.$emit('save')
             }
             else if (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100 > 49 && this.cart.point.filter((i) => i.done === true ).length /this.cart.point.length  * 100 !== 100) {
                 this.cart.status = 2;
+                eventBus.$emit('save')
             }
             else {
+                this.cart.date = new Date().toString().substr(0, 15);
                 this.cart.status = 3;
+                eventBus.$emit('save')
             }
             return (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100).toFixed(0)
-        },
+        }
     }
 })
 
@@ -141,12 +153,11 @@ Vue.component('board', {
             type: Array,
         },
         block:{
-            type: Boolean,
+            type: Array,
         }
     },
     template: `
                 <div class="board">
-                {{check}} 
                      <div class="board__header">
                         <h1>Доска {{index}}</h1>
                         <p>{{getCart().length}}</p>
@@ -154,7 +165,7 @@ Vue.component('board', {
                      <template v-if="getCart().length">
                         <div class="board__list">
                             <template v-for="item in getCart()">
-                                <cart :cart="item" :check="check" :last="last" :block="block"></cart>
+                                <cart :cart="item" :block="block"></cart>
                             </template>
                         </div>
                      </template>
@@ -213,6 +224,7 @@ let app = new Vue({
                 ],
                 status: 1,
                 check: 2,
+                date: '',
             },
             {
                 name: 'имя2',
@@ -223,6 +235,7 @@ let app = new Vue({
                     { id: 4, name: '24', done: false }
                 ],
                 status: 2,
+                date: '',
             }
         ],
         boards: [
@@ -239,15 +252,33 @@ let app = new Vue({
               done: false
             }))
             this.cart.push(cart);
-            console.log(cart);
+            this.save();
         },
+        save(){
+            localStorage.setItem('cart', JSON.stringify(this.cart));
+        }
 
 
     },
     mounted(){
+        const localStor = JSON.parse(localStorage.getItem('cart'));
+        if (localStor) {
+            this.cart = localStor;
+        }
         eventBus.$on('add-cart', this.addCart);
         eventBus.$on('close-modal', () => this.forms = !this.forms);
-    }
+        eventBus.$on('save', this.save);
+    },
+    computed:{
+        block(){
+            close = [
+                (this.boards[0].max > this.cart.filter((i) => i.status === 1).length),
+                (this.boards[1].max > this.cart.filter((i) => i.status === 2).length),
+                (this.boards[2].max > this.cart.filter((i) => i.status === 3).length)]
+            return close;
+        },
+
+    },
 })
 //new Date() + Math.random() * 100
 

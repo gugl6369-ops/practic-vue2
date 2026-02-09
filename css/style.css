@@ -237,3 +237,9 @@ progress {
     width: 100%;
     border-radius: 8px;
 }
+.cart__date{
+    display: flex;
+    padding: 5px;
+    background-color: #9ad571;
+    border-radius: 10px;
+}

@@ -15,7 +15,7 @@
         <custom-form v-show="forms" :forms="forms"></custom-form>
         <div class="boardBlock">
         <template v-for="(board, index ) in boards">
-            <board :cart="cart" :index="index" :board="board" :block="board.block"></board>
+            <board :cart="cart" :index="index" :board="board" :block="block"></board>
         </template>
         </div>
     </div>
