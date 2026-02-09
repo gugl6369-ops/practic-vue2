@@ -12,26 +12,16 @@ Vue.component('custom-form', {
                     <div @click="modal" class="overlay"></div>
                     <form class="form" @submit.prevent="handleSubmit">
                         <p>СОЗАДНИЕ КАРТОЧКИ</p>
-                        <label class="from__header">Название
-                            <input type="text" v-model="formData.name" class="form__input" required>
-                        </label>
-                        <div class="form__block">
-                            <label>
-                                <input type="text" v-model="formData.point[index]"  class="form__input"  required>
-                            </label>    
-                            <button v-show="countPoint<5" @click="pointAdd+=1" type="button">Добавить задание</button>
-                        </div>
+                        
                         <button type="submit">Сохранить</button>
                     </form>
                  </div>
               `,
     data(){
         return{
-            pointAdd: 0,
             model: 10,
             formData: {
                 name: '',
-                point:['', '', ''],
                 status: 1,
                 check: false
             }
@@ -44,11 +34,10 @@ Vue.component('custom-form', {
             eventBus.$emit('close-modal');
             this.formData ={
                 name: '',
-                point:['', '', ''],
                 status: 1,
                 date: '',
             }
-            this.pointAdd = 0
+
         },
         modal() {
             eventBus.$emit('close-modal');
@@ -56,9 +45,7 @@ Vue.component('custom-form', {
 
     },
     computed:{
-        countPoint(){
-            return 3 + this.pointAdd;
-        }
+
     },
 })
 
@@ -68,32 +55,27 @@ Vue.component('cart', {
             type: Array,
             required: true
         },
-        block:{
-            type: Array,
-        },
     },
     template: `
                 <article class="cart">
                     <div class="cart_header">
-                        <img class="icon" src="../assets/icon.png" alt="оконка"> 
-                        <p> {{cart.name}} </p>
-                        <p class="cart__date" v-show="cart.date">{{cart.date}}</p>
+                        <p class="cart__date">{{ Math.floor((Date.now() - cart.date) / (1000 * 60 * 60)) }} ч.</p>    
+                        <button class="icon_btn icon_btn--pen">
+                            <img class="icon" src="/assets/pen.png" >
+                        </button>
                     </div> 
+                     <p> {{cart.name}} </p>
                     <div class="cart__content">
-                        <div class="task">
-                            <p>{{cart.point.filter((i) => i.done === true ).length}} of {{cart.point.length}}</p> 
-                            <label>
-                                <progress :value="progress" max="100"></progress>
-                            </label>
-                            <p> {{progress}}% </p>
-                        </div>
+                        <p class="cart__subtitle">{{cart.subtitle}}</p>
                         <div class="cart__list">
-                            <template v-for="(i, index) in cart.point" :key="index">
-                                <label> 
-                                    <input v-model="i.done" type="checkbox" :disabled="blocked(i.done)" @change="eventBus.$emit('save')" >
-                                    {{i.name}}
-                                </label>                                   
-                            </template>
+                            <div class="cart__listBlock">
+                                <img src="/assets/flag.png" class="cart__deadflag">
+                                <p>{{ Math.floor((cart.deadline - Date.now()) / (1000 * 60 * 60)) }} ч. осталось</p>
+                            </div>
+                            <button class="icon_btn icon_btn--delete">
+                                <img class="icon" src="/assets/delete.png">
+                            </button>
+                            
                         </div> 
                     </div>
                     <div>
@@ -106,38 +88,14 @@ Vue.component('cart', {
             name: 'name',
         }
     },
-    methods: {
-        blocked(i){
-            console.log('Блоки:', (this.cart.point.map((i) => i.done === true).length - 1)/(this.cart.point.length * 100) < 50 )
-            if (this.cart.status === 1 && this.block[1] === false && i === false) {
-                return true
-            }
-            else if (this.cart.status === 2 && this.block[0] === false && i === true) {
-                return true
-            }
-            else if (this.cart.status === 3) {
-                return true
-            }
-        }
-    },
-    computed: {
-        progress(){
-            if (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100 < 50) {
-                this.cart.status = 1;
-                eventBus.$emit('save')
-            }
-            else if (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100 > 49 && this.cart.point.filter((i) => i.done === true ).length /this.cart.point.length  * 100 !== 100) {
-                this.cart.status = 2;
-                eventBus.$emit('save')
-            }
-            else {
-                this.cart.date = new Date().toString().substr(0, 15);
-                this.cart.status = 3;
-                eventBus.$emit('save')
-            }
-            return (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100).toFixed(0)
-        }
-    }
+// {
+//     id: 1,
+//         name: 'имя',
+//     subtitle: '',
+//     deadline: '',
+//     date: new Date().toString().substr(0, 15),
+//     status: 1,
+// },
 })
 
 Vue.component('board', {
@@ -145,18 +103,17 @@ Vue.component('board', {
         cart:{type: Array},
         index:{ type: Number},
         board:{type: Array},
-        block:{type: Array}
     },
     template: `
                 <div class="board">
                      <div class="board__header">
-                        <h1>Доска {{index}}</h1>
+                        <h1>{{board.name}}</h1>
                         <p>{{getCart().length}}</p>
                      </div>
                      <template v-if="getCart().length">
                         <div class="board__list">
                             <template v-for="item in getCart()">
-                                <cart :cart="item" :block="block"></cart>
+                                <cart :cart="item"></cart>
                             </template>
                         </div>
                      </template>
@@ -179,23 +136,7 @@ Vue.component('board', {
         }
     },
     computed:{
-        check(){
-            return (this.cart.filter(item=> item.status == this.board.id + 1).length >= 5 && this.index === 0);
-        },
-        last(){
-            if (this.index === 2){
-                if (this.cart.filter(item=> item.status == this.board.id - 1).length >= 5){
-                    return false;
-                }
-                else {
-                    return true;
-                }
-            }
-            else {
-                return true;
-            }
 
-        },
 
     }
 })
@@ -204,14 +145,30 @@ let app = new Vue({
     el: '#app',
     data: {
         forms: true,
-        // Карточка должна содержать: дату создания, заголовок, описание задачи, дэдлайн.
+        // ++ Карточка должна содержать: дату создания, заголовок, описание задачи, дэдлайн.
         cart: [
             {
                 id: 1,
                 name: 'имя',
-                subtitle: '',
-                deadline: '',
-                date: new Date().toString().substr(0, 15),
+                subtitle: 'Карточка должна содержать: дату создания, заголовок, описание задачи, дэдлайн.',
+                deadline: new Date(2026, 1, 10),
+                date: new Date(2026, 1, 9),
+                status: 1,
+            },
+            {
+                id: 2,
+                name: 'имя',
+                subtitle: 'Карточка должна содержать: дату создания, заголовок, описание задачи, дэдлайн.',
+                deadline: new Date(2026, 1, 10),
+                date: new Date(2026, 1, 9),
+                status: 1,
+            },
+            {
+                id: 3,
+                name: 'имя',
+                subtitle: 'Карточка должна содержать: дату создания, заголовок, описание задачи, дэдлайн.',
+                deadline: new Date(2026, 1, 10),
+                date: new Date(2026, 1, 9),
                 status: 1,
             },
         ],
@@ -219,20 +176,15 @@ let app = new Vue({
             //Функционал первого столбца.
             //Должна быть возможность создания, удаления и редактирования карточки с сохранением временного штампа последнего времени редактирования.
             //Должна быть возможность перемещать карточку во второй столбец (“В работе”).
-            { id: 1, name: 'Запланированные задачи', done: false, max: 3, block: false },
+            { id: 1, name: 'Запланированные задачи',},
 
-            { id: 2, name: 'Задачи в работе', done: false, max: 5, block: false },
-            { id: 3, name: 'Тестирование', done: false, max: 1000000, block: true },
-            { id: 4, name: 'Выполненные задачи', done: false, max: 1000000, block: true },
+            { id: 2, name: 'Задачи в работе', },
+            { id: 3, name: 'Тестирование', },
+            { id: 4, name: 'Выполненные задачи',},
         ],
     },
     methods: {
         addCart(cart){
-            cart.point = cart.point.map((item, index)=>({
-                id: index,
-                name: item,
-                done: false
-            }))
             this.cart.push(cart);
             this.save();
         },
