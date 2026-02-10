@@ -32,9 +32,10 @@ Vue.component('custom-form', {
         return{
             model: 10,
             formData: {
+                id: new Date().toISOString() + Math.random() * 1000,
                 name: '',
                 subtitle: '',
-                date: Date,
+                date: new Date(),
                 deadline: Date,
                 status: 1,
                 check: false
@@ -46,11 +47,12 @@ Vue.component('custom-form', {
             eventBus.$emit('add-cart', this.formData);
             eventBus.$emit('close-modal');
             this.formData ={
+                id: new Date().toISOString() + Math.random() * 1000,
                 name: '',
                 subtitle: '',
                 deadline: '',
                 status: 1,
-                date: '',
+                date: new Date(),
             }
             console.log(this.formData);
 
@@ -141,7 +143,7 @@ Vue.component('board', {
                      <template v-else>
                         <p>нет ничего</p>
                      </template>
-                    <div v-show="!(board.max <= getCart().length) && board.id == 1">
+                    <div>
                         <button @click="modal" class="board__button">Добавить задачу</button>
                     </div>
                 </div>
