@@ -13,6 +13,23 @@
     width: 25px;
     height: 25px;
 }
+.arrow{
+    border-radius: 50%;
+    padding: 5px;
+    border: 3px dashed rgb(74, 126, 40);
+    background-color: transparent;
+    box-shadow: 0 5px 15px rgba(161, 255, 98, 0.2);
+    cursor: pointer;
+}
+.arrow:hover{
+    transform: scale(1.2);
+}
+.moov{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+
+}
 .icon_btn{
     display: flex;
     border: 1px dashed gray;
@@ -42,7 +59,6 @@
     gap: 15px;
     background-color: rgba(205, 205, 205, 0.03);
     transition: 0.3s;
-    cursor: pointer;
 
 }
 .cart_header{

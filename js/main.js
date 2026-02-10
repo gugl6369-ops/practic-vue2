@@ -5,6 +5,9 @@ Vue.component('custom-form', {
         forms:{
             type: Boolean,
             required: true
+        },
+        cart:{
+            type: Boolean,
         }
     },
     template: `
@@ -36,9 +39,10 @@ Vue.component('custom-form', {
                 name: '',
                 subtitle: '',
                 date: new Date(),
-                deadline: Date,
+                deadline: '',
                 status: 1,
-                check: false
+                check: false,
+                message: '',
             }
         }
     },
@@ -53,6 +57,7 @@ Vue.component('custom-form', {
                 deadline: '',
                 status: 1,
                 date: new Date(),
+                message: '',
             }
             console.log(this.formData);
 
@@ -76,8 +81,16 @@ Vue.component('cart', {
     },
     template: `
                 <article class="cart">
+                    <div class="moov">
+                        <button v-if="cart.status === 3" class="arrow" @click="mooveCart(-1)">
+                            <img class="icon" style="transform: rotate(-180deg)" src="./assets/arrow.png">
+                        </button>
+                        <button v-if="cart.status < 4" class="arrow" @click="mooveCart(1)">
+                            <img class="icon" src="./assets/arrow.png">
+                        </button>
+                    </div>
                     <div class="cart_header">
-                        <p class="cart__date">{{ Math.floor((Date.now() - cart.date) / (1000 * 60 * 60)) }} ч. назад</p>    
+                        <p class="cart__date">{{ ( (new Date().getTime() - new Date(this.cart.date).getTime() ) / (1000 * 60 * 60)).toFixed(0) }} ч. назад</p>    
                         <button class="icon_btn icon_btn--pen">
                             <img class="icon" src="/assets/pen.png" >
                         </button>
@@ -85,10 +98,13 @@ Vue.component('cart', {
                      <p> {{cart.name}} </p>
                     <div class="cart__content">
                         <p class="cart__subtitle">{{cart.subtitle}}</p>
+                        <p v-show="cart.message" class="cart__subtitle">
+                            {{cart.message}}
+                        </p>
                         <div class="cart__list">
                             <div class="cart__listBlock">
                                 <img src="/assets/flag.png" class="cart__deadflag">
-                                <p>{{ Math.floor((cart.deadline - Date.now()) / (1000 * 60 * 60)) }} ч. осталось</p>
+                                <p>{{ (( new Date(this.cart.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60)).toFixed(0) }} ч. осталось</p>
                             </div>
                             <button class="icon_btn icon_btn--delete" @click="deleteCart">
                                 <img class="icon" src="/assets/delete.png">
@@ -97,7 +113,6 @@ Vue.component('cart', {
                         </div> 
                     </div>
                     <div>
-                        
                     </div>  
                 </article>
               `,
@@ -109,16 +124,11 @@ Vue.component('cart', {
     methods:{
         deleteCart() {
             eventBus.$emit('delete-cart', this.cart);
-        }
+        },
+    },
+    computed:{
+
     }
-// {
-//     id: 1,
-//         name: 'имя',
-//     subtitle: '',
-//     deadline: '',
-//     date: new Date().toString().substr(0, 15),
-//     status: 1,
-// },
 })
 
 Vue.component('board', {
@@ -143,7 +153,7 @@ Vue.component('board', {
                      <template v-else>
                         <p>нет ничего</p>
                      </template>
-                    <div>
+                    <div v-if="board.id === 1">
                         <button @click="modal" class="board__button">Добавить задачу</button>
                     </div>
                 </div>
@@ -177,6 +187,7 @@ let app = new Vue({
                 deadline: new Date(2026, 1, 11),
                 date: new Date(2026, 1, 9),
                 status: 1,
+                message: '',
             },
             {
                 id: 2,
@@ -185,6 +196,7 @@ let app = new Vue({
                 deadline: new Date(2026, 1, 11),
                 date: new Date(2026, 1, 9),
                 status: 1,
+                message: '',
             },
             {
                 id: 3,
@@ -193,14 +205,11 @@ let app = new Vue({
                 deadline: new Date(2026, 1, 11),
                 date: new Date(2026, 1, 9),
                 status: 1,
+                message: '',
             },
         ],
         boards: [
-            //Функционал первого столбца.
-            //Должна быть возможность создания, удаления и редактирования карточки с сохранением временного штампа последнего времени редактирования.
-            //Должна быть возможность перемещать карточку во второй столбец (“В работе”).
             { id: 1, name: 'Запланированные задачи',},
-
             { id: 2, name: 'Задачи в работе', },
             { id: 3, name: 'Тестирование', },
             { id: 4, name: 'Выполненные задачи',},
@@ -217,6 +226,14 @@ let app = new Vue({
         },
         save(){
             localStorage.setItem('cart', JSON.stringify(this.cart));
+        },
+        moove(cart, stat){
+            this.cart = this.cart.map(item => {
+                if (item.id == cart.id){
+                    item.status = stat
+                }
+            });
+            this.save();
         }
 
 
@@ -230,6 +247,7 @@ let app = new Vue({
         eventBus.$on('close-modal', () => this.forms = !this.forms);
         eventBus.$on('save', this.save);
         eventBus.$on('delete-cart', this.deleteCart);
+        eventBus.$on('moove-cart', this.moove);
     },
     computed:{
 
