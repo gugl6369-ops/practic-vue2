@@ -8,6 +8,7 @@ Vue.component('custom-form', {
         },
         cart:{
             type: Boolean,
+            required: false
         },
 
     },
@@ -66,7 +67,8 @@ Vue.component('custom-form', {
         },
         modal() {
             eventBus.$emit('close-modal');
-        }
+        },
+
 
     },
     computed:{
@@ -83,7 +85,7 @@ Vue.component('cart', {
     },
     template: `
                 <article>
-                    <div class="cart" v-if="!redact">
+                    <div class="cart" v-if="!cart.redact">
                         <div class="moov">
                             <button v-if="cart.status === 3" class="arrow" @click="mooveCart(-1)">
                                 <img class="icon" style="transform: rotate(-180deg)" src="./assets/arrow.png">
@@ -93,8 +95,10 @@ Vue.component('cart', {
                             </button>
                         </div>
                         <div class="cart_header">
+                        {{cart.redact}}
                             <p class="cart__date">{{ ( (new Date().getTime() - new Date(this.cart.date).getTime() ) / (1000 * 60 * 60)).toFixed(0) }} ч. назад</p>    
-                            <button class="icon_btn icon_btn--pen" >
+                            <button class="icon_btn icon_btn--pen" @click="cart.redact = !cart.redact">
+                            
                                 <img class="icon" src="/assets/pen.png" >
                             </button>
                         </div> 
@@ -117,7 +121,7 @@ Vue.component('cart', {
                         </div> 
                     </div>
                     <div v-else>
-                        
+                        <custom-form></custom-form>
                     </div>
                 </article>
               `,
@@ -175,7 +179,7 @@ Vue.component('board', {
             return this.cart.filter(item=> item.status == this.board.id );
         },
         modal() {
-            eventBus.$emit('close-modal');
+            eventBus.$emit('open-modal');
         }
     },
     computed:{
@@ -187,7 +191,7 @@ Vue.component('board', {
 let app = new Vue({
     el: '#app',
     data: {
-        forms: true,
+        forms: false,
         // ++ Карточка должна содержать: дату создания, заголовок, описание задачи, дэдлайн.
         cart: [
             {
@@ -249,12 +253,15 @@ let app = new Vue({
             this.cart = localStor;
         }
         eventBus.$on('add-cart', this.addCart);
-        eventBus.$on('close-modal', () => this.forms = !this.forms);
+        eventBus.$on('close-modal', () => this.forms = false);
+        eventBus.$on('open-modal', () => this.forms = true);
         eventBus.$on('save', this.save);
         eventBus.$on('delete-cart', this.deleteCart);
     },
     computed:{
+        redact(){
 
+        }
 
     },
 })
