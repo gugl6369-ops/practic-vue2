@@ -59,7 +59,7 @@ Vue.component('cart', {
     template: `
                 <article class="cart">
                     <div class="cart_header">
-                        <p class="cart__date">{{ Math.floor((Date.now() - cart.date) / (1000 * 60 * 60)) }} ч.</p>    
+                        <p class="cart__date">{{ Math.floor((Date.now() - cart.date) / (1000 * 60 * 60)) }} ч. назад</p>    
                         <button class="icon_btn icon_btn--pen">
                             <img class="icon" src="/assets/pen.png" >
                         </button>
@@ -151,7 +151,7 @@ let app = new Vue({
                 id: 1,
                 name: 'имя',
                 subtitle: 'Карточка должна содержать: дату создания, заголовок, описание задачи, дэдлайн.',
-                deadline: new Date(2026, 1, 10),
+                deadline: new Date(2026, 1, 11),
                 date: new Date(2026, 1, 9),
                 status: 1,
             },
@@ -159,7 +159,7 @@ let app = new Vue({
                 id: 2,
                 name: 'имя',
                 subtitle: 'Карточка должна содержать: дату создания, заголовок, описание задачи, дэдлайн.',
-                deadline: new Date(2026, 1, 10),
+                deadline: new Date(2026, 1, 11),
                 date: new Date(2026, 1, 9),
                 status: 1,
             },
@@ -167,7 +167,7 @@ let app = new Vue({
                 id: 3,
                 name: 'имя',
                 subtitle: 'Карточка должна содержать: дату создания, заголовок, описание задачи, дэдлайн.',
-                deadline: new Date(2026, 1, 10),
+                deadline: new Date(2026, 1, 11),
                 date: new Date(2026, 1, 9),
                 status: 1,
             },
