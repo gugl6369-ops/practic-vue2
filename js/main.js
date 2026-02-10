@@ -1,4 +1,50 @@
 let eventBus = new Vue()
+Vue.component('count-board', {
+    props: {
+        cart:{
+            type: Array,
+            required: true
+        },
+        boards:{
+            type: Array,
+            required: true
+        }
+    },
+    template: `
+                <div class="boardBlock">
+                    <div class="okno" v-for="(board, index) in boards">                    
+                        <p> доска {{ board.name }} {{ index+1 }} </p>
+                    <template v-if="countet()[index] > 1">
+                        <p> Cреднее количество заданий:  {{ countet()[index].toFixed(1) }} </p>
+                    </template>
+                    <template v-else>
+                        <p>Нет заданий</p>
+                    </template>
+                    </div>
+                </div>
+                `,
+    data(){
+        return{
+
+        }
+    },
+    methods:{
+        countet(){
+            awg = [0, 0, 0]
+            for(let board of this.boards){
+                for(let item of this.cart.filter((i) => i.status == (board.id))){
+                    awg[board.id-1] += item.point.length
+                }
+                awg[board.id-1] /= this.cart.filter((i) => i.status == (board.id)).length
+            }
+            return awg
+        }
+    },
+    computed:{
+
+    }
+})
+
 
 Vue.component('custom-form', {
     props: {
@@ -40,7 +86,6 @@ Vue.component('custom-form', {
     },
     methods:{
         handleSubmit() {
-            console.log(this.formData.name);
             eventBus.$emit('add-cart', this.formData);
             eventBus.$emit('close-modal');
             this.formData ={
@@ -109,7 +154,6 @@ Vue.component('cart', {
     },
     methods: {
         blocked(i){
-            console.log('Блоки:', (this.cart.point.map((i) => i.done === true).length - 1)/(this.cart.point.length * 100) < 50 )
             if (this.cart.status === 1 && this.block[1] === false && i === false) {
                 return true
             }
@@ -277,6 +321,10 @@ let app = new Vue({
                 (this.boards[2].max > this.cart.filter((i) => i.status === 3).length)]
             return close;
         },
+        countCart(){
+            console.log(this.cart.length)
+            return this.cart.length >= 5
+        }
 
     },
 })

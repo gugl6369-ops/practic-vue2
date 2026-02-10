@@ -51,6 +51,10 @@ body{
 .content{
     padding: 50px;
 }
+.okno{
+    width: 100%;
+    padding: 10px;
+}
 
 .boardBlock{
     width: 100%;

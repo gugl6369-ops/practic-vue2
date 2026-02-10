@@ -12,11 +12,15 @@
 </head>
 <body>
     <div id="app" class="content">
+        <template >
+        <count-board v-show="cart.length >= 5" :boards="boards" :cart="cart"></count-board>
+        </template>
         <custom-form v-show="forms" :forms="forms"></custom-form>
         <div class="boardBlock">
         <template v-for="(board, index ) in boards">
             <board :cart="cart" :index="index" :board="board" :block="block"></board>
         </template>
+
         </div>
     </div>
 </body>
