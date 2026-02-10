@@ -8,7 +8,8 @@ Vue.component('custom-form', {
         },
         cart:{
             type: Boolean,
-        }
+        },
+
     },
     template: `
                  <div class="addCart">
@@ -43,6 +44,7 @@ Vue.component('custom-form', {
                 status: 1,
                 check: false,
                 message: '',
+                redact: false,
             }
         }
     },
@@ -80,50 +82,58 @@ Vue.component('cart', {
         },
     },
     template: `
-                <article class="cart">
-                    <div class="moov">
-                        <button v-if="cart.status === 3" class="arrow" @click="mooveCart(-1)">
-                            <img class="icon" style="transform: rotate(-180deg)" src="./assets/arrow.png">
-                        </button>
-                        <button v-if="cart.status < 4" class="arrow" @click="mooveCart(1)">
-                            <img class="icon" src="./assets/arrow.png">
-                        </button>
-                    </div>
-                    <div class="cart_header">
-                        <p class="cart__date">{{ ( (new Date().getTime() - new Date(this.cart.date).getTime() ) / (1000 * 60 * 60)).toFixed(0) }} ч. назад</p>    
-                        <button class="icon_btn icon_btn--pen">
-                            <img class="icon" src="/assets/pen.png" >
-                        </button>
-                    </div> 
-                     <p> {{cart.name}} </p>
-                    <div class="cart__content">
-                        <p class="cart__subtitle">{{cart.subtitle}}</p>
-                        <p v-show="cart.message" class="cart__subtitle">
-                            {{cart.message}}
-                        </p>
-                        <div class="cart__list">
-                            <div class="cart__listBlock">
-                                <img src="/assets/flag.png" class="cart__deadflag">
-                                <p>{{ (( new Date(this.cart.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60)).toFixed(0) }} ч. осталось</p>
-                            </div>
-                            <button class="icon_btn icon_btn--delete" @click="deleteCart">
-                                <img class="icon" src="/assets/delete.png">
+                <article>
+                    <div class="cart" v-if="!redact">
+                        <div class="moov">
+                            <button v-if="cart.status === 3" class="arrow" @click="mooveCart(-1)">
+                                <img class="icon" style="transform: rotate(-180deg)" src="./assets/arrow.png">
                             </button>
-                            
+                            <button v-if="cart.status < 4" class="arrow" @click="mooveCart(1)">
+                                <img class="icon" src="./assets/arrow.png">
+                            </button>
+                        </div>
+                        <div class="cart_header">
+                            <p class="cart__date">{{ ( (new Date().getTime() - new Date(this.cart.date).getTime() ) / (1000 * 60 * 60)).toFixed(0) }} ч. назад</p>    
+                            <button class="icon_btn icon_btn--pen" >
+                                <img class="icon" src="/assets/pen.png" >
+                            </button>
+                        </div> 
+                         <p> {{cart.name}} </p>
+                        <div class="cart__content">
+                            <p class="cart__subtitle">{{cart.subtitle}}</p>
+                            <p v-show="cart.message" class="cart__subtitle">
+                                {{cart.message}}
+                            </p>
+                            <div class="cart__list">
+                                <div class="cart__listBlock">
+                                    <img src="/assets/flag.png" class="cart__deadflag">
+                                    <p>{{ (( new Date(this.cart.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60)).toFixed(0) }} ч. осталось</p>
+                                </div>
+                                <button class="icon_btn icon_btn--delete" @click="deleteCart">
+                                    <img class="icon" src="/assets/delete.png">
+                                </button>
+                                
+                            </div> 
                         </div> 
                     </div>
-                    <div>
-                    </div>  
+                    <div v-else>
+                        
+                    </div>
                 </article>
               `,
     data() {
         return {
             name: 'name',
+            redact: false,
         }
     },
     methods:{
         deleteCart() {
             eventBus.$emit('delete-cart', this.cart);
+        },
+        mooveCart(i) {
+            this.cart.status += i;
+            eventBus.$emit('save');
         },
     },
     computed:{
@@ -188,6 +198,7 @@ let app = new Vue({
                 date: new Date(2026, 1, 9),
                 status: 1,
                 message: '',
+                redact: false,
             },
             {
                 id: 2,
@@ -197,6 +208,7 @@ let app = new Vue({
                 date: new Date(2026, 1, 9),
                 status: 1,
                 message: '',
+                redact: false,
             },
             {
                 id: 3,
@@ -206,6 +218,7 @@ let app = new Vue({
                 date: new Date(2026, 1, 9),
                 status: 1,
                 message: '',
+                redact: false,
             },
         ],
         boards: [
@@ -227,14 +240,6 @@ let app = new Vue({
         save(){
             localStorage.setItem('cart', JSON.stringify(this.cart));
         },
-        moove(cart, stat){
-            this.cart = this.cart.map(item => {
-                if (item.id == cart.id){
-                    item.status = stat
-                }
-            });
-            this.save();
-        }
 
 
     },
@@ -247,7 +252,6 @@ let app = new Vue({
         eventBus.$on('close-modal', () => this.forms = !this.forms);
         eventBus.$on('save', this.save);
         eventBus.$on('delete-cart', this.deleteCart);
-        eventBus.$on('moove-cart', this.moove);
     },
     computed:{
 
