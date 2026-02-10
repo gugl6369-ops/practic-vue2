@@ -12,7 +12,18 @@ Vue.component('custom-form', {
                     <div @click="modal" class="overlay"></div>
                     <form class="form" @submit.prevent="handleSubmit">
                         <p>СОЗАДНИЕ КАРТОЧКИ</p>
-                        
+                        <label>
+                        Название
+                            <input type="text" v-model="formData.name" required>
+                        </label>
+                        <label>
+                        Описание
+                            <input type="text" v-model="formData.subtitle" required>
+                        </label>
+                        <label>
+                        deadline:
+                            <input type="date" v-model="formData.deadline" required>
+                        </label>
                         <button type="submit">Сохранить</button>
                     </form>
                  </div>
@@ -22,6 +33,9 @@ Vue.component('custom-form', {
             model: 10,
             formData: {
                 name: '',
+                subtitle: '',
+                date: Date,
+                deadline: Date,
                 status: 1,
                 check: false
             }
@@ -29,14 +43,16 @@ Vue.component('custom-form', {
     },
     methods:{
         handleSubmit() {
-            console.log(this.formData.name);
             eventBus.$emit('add-cart', this.formData);
             eventBus.$emit('close-modal');
             this.formData ={
                 name: '',
+                subtitle: '',
+                deadline: '',
                 status: 1,
                 date: '',
             }
+            console.log(this.formData);
 
         },
         modal() {
@@ -72,7 +88,7 @@ Vue.component('cart', {
                                 <img src="/assets/flag.png" class="cart__deadflag">
                                 <p>{{ Math.floor((cart.deadline - Date.now()) / (1000 * 60 * 60)) }} ч. осталось</p>
                             </div>
-                            <button class="icon_btn icon_btn--delete">
+                            <button class="icon_btn icon_btn--delete" @click="deleteCart">
                                 <img class="icon" src="/assets/delete.png">
                             </button>
                             
@@ -88,6 +104,11 @@ Vue.component('cart', {
             name: 'name',
         }
     },
+    methods:{
+        deleteCart() {
+            eventBus.$emit('delete-cart', this.cart);
+        }
+    }
 // {
 //     id: 1,
 //         name: 'имя',
@@ -188,6 +209,10 @@ let app = new Vue({
             this.cart.push(cart);
             this.save();
         },
+        deleteCart(cart){
+            this.cart = this.cart.filter(item => item.id !== cart.id);
+            this.save();
+        },
         save(){
             localStorage.setItem('cart', JSON.stringify(this.cart));
         }
@@ -202,6 +227,7 @@ let app = new Vue({
         eventBus.$on('add-cart', this.addCart);
         eventBus.$on('close-modal', () => this.forms = !this.forms);
         eventBus.$on('save', this.save);
+        eventBus.$on('delete-cart', this.deleteCart);
     },
     computed:{
 
