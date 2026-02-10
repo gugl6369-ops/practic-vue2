@@ -61,6 +61,7 @@ Vue.component('custom-form', {
                         <label class="from__header">Название
                             <input type="text" v-model="formData.name" class="form__input" required>
                         </label>
+                        <input type="date" v-model="formData.deadline" class="form__input">
                         <div class="form__block">
                             <label v-for="(item, index) in countPoint">
                                 {{index+1}}
@@ -80,7 +81,8 @@ Vue.component('custom-form', {
                 name: '',
                 point:['', '', ''],
                 status: 1,
-                check: false
+                check: false,
+                deadline: ''
             }
         }
     },
@@ -90,9 +92,10 @@ Vue.component('custom-form', {
             eventBus.$emit('close-modal');
             this.formData ={
                 name: '',
-                    point:['', '', ''],
-                    status: 1,
-                    date: '',
+                point:['', '', ''],
+                status: 1,
+                date: '',
+                deadline: '',
             }
             this.pointAdd = 0
         },
@@ -119,32 +122,33 @@ Vue.component('cart', {
         },
     },
     template: `
-                <article class="cart">
-                    <div class="cart_header">
-                        <img class="icon" src="../assets/icon.png" alt="оконка"> 
-                        <p> {{cart.name}} </p>
-                        <p class="cart__date" v-show="cart.date">{{cart.date}}</p>
-                    </div> 
-                    <div class="cart__content">
-                        <div class="task">
-                            <p>{{cart.point.filter((i) => i.done === true ).length}} of {{cart.point.length}}</p> 
-                            <label>
-                                <progress :value="progress" max="100"></progress>
-                            </label>
-                            <p> {{progress}}% </p>
+                <article style="position: relative;">
+                    <div :class="deadlineName"></div>
+                    <div class="cart">
+                        <div class="cart_header">
+                            <img class="icon" src="../assets/icon.png" alt="оконка"> 
+                            <p> {{cart.name}} </p>
+                            <p class="cart__date" v-show="cart.date">{{cart.date}}</p>
                         </div>
-                        <div class="cart__list">
-                            <template v-for="(i, index) in cart.point" :key="index">
-                                <label> 
-                                    <input v-model="i.done" type="checkbox" :disabled="blocked(i.done)" @change="eventBus.$emit('save')" >
-                                    {{i.name}}
-                                </label>                                   
-                            </template>
-                        </div> 
+                        <div class="cart__content">
+                            <p  >{{ cart.deadline.toString().substr(0, 10) }}</p>
+                            <div class="task">
+                                <p>{{cart.point.filter((i) => i.done === true ).length}} of {{cart.point.length}}</p> 
+                                <label>
+                                    <progress :value="progress" max="100"></progress>
+                                </label>
+                                <p> {{progress}}% </p>
+                            </div>
+                            <div class="cart__list">
+                                <template v-for="(i, index) in cart.point" :key="index">
+                                    <label> 
+                                        <input v-model="i.done" type="checkbox" :disabled="blocked(i.done)" @change="eventBus.$emit('save')" >
+                                        {{i.name}}
+                                    </label>                                   
+                                </template>
+                            </div> 
+                        </div>
                     </div>
-                    <div>
-                        
-                    </div>  
                 </article>
               `,
     data() {
@@ -181,6 +185,24 @@ Vue.component('cart', {
                 eventBus.$emit('save')
             }
             return (this.cart.point.filter((i) => i.done === true ).length / this.cart.point.length  * 100).toFixed(0)
+        },
+        deadlineName(){
+            styleCart = [
+                'deadline',
+                'deadline24',
+                'deadline72 ',
+            ]
+            if ( (new Date(this.cart.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60) <= 24 && this.cart.status !== 3) {
+                console.log('1: ', this.cart.name, ((Date.now() - this.cart.deadline) / (1000 * 60 * 60)) )
+                return styleCart[1]
+            }
+            else if ((new Date(this.cart.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60) > 24 && (new Date(this.cart.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60) <= 72 && this.cart.status !== 3) {
+                console.log('2: ', (new Date(this.cart.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60) )
+                return styleCart[2]
+            }
+            else {
+                return styleCart[0]
+            }
         }
     }
 })
@@ -256,7 +278,7 @@ Vue.component('board', {
 let app = new Vue({
     el: '#app',
     data: {
-        forms: true,
+        forms: false,
         cart: [
             {
                 name: 'имя',
@@ -269,6 +291,7 @@ let app = new Vue({
                 status: 1,
                 check: 2,
                 date: '',
+                deadline: new Date('2026', '1', '11'),
             },
             {
                 name: 'имя2',
@@ -280,6 +303,7 @@ let app = new Vue({
                 ],
                 status: 2,
                 date: '',
+                deadline: new Date('2026', '1', '12'),
             }
         ],
         boards: [

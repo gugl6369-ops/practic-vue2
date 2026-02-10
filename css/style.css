@@ -1,12 +1,61 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 body{
     font-family: 'Segoe UI', sans-serif;
     color: #475569;
     position: relative;
 }
+.deadline{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
+}
+.deadline24::before{
+    content: '';
+    position: absolute;
+    border: 3px solid #df243a;
+    inset: -10px;
+    border-radius: 24px;
+    animation: pulse 2s infinite;
+    background: rgba(255, 50, 74, 0.45);
+    z-index: -31;
+}
+.deadline72::before{
+    content: '';
+    position: absolute;
+    border: 3px solid #df5024;
+    inset: -10px;
+    border-radius: 24px;
+    animation: pulse 2s infinite;
+    background: rgba(246, 63, 10, 0.45);
+}
+
+
+/*карточки, дедлайн которых наступит менее,чем через 24 часа начинают пульсировать красным (анимация)*/
 .board > div .cart {
     animation: cartApper 0.8s cubic-bezier(.25,.8,.25,1);
     transition: .3s ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.01);
+        opacity: 0;
+    }
 }
 
 @keyframes cartApper {
@@ -57,10 +106,10 @@ body{
 }
 
 .boardBlock{
-    width: 100%;
+    width: 90%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
+    gap: 50px;
 
 }
 .board{
@@ -90,8 +139,10 @@ body{
 
 .board__list{
     display: flex;
+    height: 100%;
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
+    padding: 20px;
     max-height: 1200px;
     overflow: auto;
     align-items: center;
@@ -99,13 +150,15 @@ body{
 
 
 .cart {
-    width: 90%;
+    position: relative;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: rgba(255, 255, 255, 0.54);
+    background-color: rgb(255, 255, 255);
     border: 3px solid rgba(193, 221, 190, 0.63);
     border-radius: 24px;
     backdrop-filter: blur(15px);
+    z-index: 2;
 }
 .cart:hover{
     transform: translateY(-6px);
@@ -115,7 +168,7 @@ body{
     padding: 20px;
 }
 .cart_header{
-    width: auto;
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 14px;
@@ -149,7 +202,7 @@ progress:indeterminate {
 }
 
 progress {
-    width: 300px;
+    width: 200px;
     height: 20px;
     accent-color: #A7F3D0;
 }
@@ -244,6 +297,6 @@ progress {
 .cart__date{
     display: flex;
     padding: 5px;
-    background-color: #9ad571;
+    background-color: #c2d1b7;
     border-radius: 10px;
 }
