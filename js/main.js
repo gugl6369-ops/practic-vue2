@@ -6,10 +6,6 @@ Vue.component('custom-form', {
             type: Boolean,
             required: true
         },
-        cart:{
-            type: Boolean,
-            required: false
-        },
 
     },
     template: `
@@ -19,17 +15,17 @@ Vue.component('custom-form', {
                         <p>СОЗАДНИЕ КАРТОЧКИ</p>
                         <label>
                         Название
-                            <input type="text" v-model="formData.name" required>
+                            <input type="text" class="form__input" v-model="formData.name" required>
                         </label>
                         <label>
                         Описание
-                            <input type="text" v-model="formData.subtitle" required>
+                            <input type="text" class="form__input" v-model="formData.subtitle" required>
                         </label>
                         <label>
                         deadline:
-                            <input type="date" v-model="formData.deadline" required>
+                            <input type="date" class="form__input" v-model="formData.deadline" required>
                         </label>
-                        <button type="submit">Сохранить</button>
+                        <button type="submit" class="form__button">Сохранить</button>
                     </form>
                  </div>
               `,
@@ -46,6 +42,7 @@ Vue.component('custom-form', {
                 check: false,
                 message: '',
                 redact: false,
+                messageAdd: false,
             }
         }
     },
@@ -62,8 +59,6 @@ Vue.component('custom-form', {
                 date: new Date(),
                 message: '',
             }
-            console.log(this.formData);
-
         },
         modal() {
             eventBus.$emit('close-modal');
@@ -95,17 +90,16 @@ Vue.component('cart', {
                             </button>
                         </div>
                         <div class="cart_header">
-                        {{cart.redact}}
-                            <p class="cart__date">{{ ( (new Date().getTime() - new Date(this.cart.date).getTime() ) / (1000 * 60 * 60)).toFixed(0) }} ч. назад</p>    
-                            <button class="icon_btn icon_btn--pen" @click="cart.redact = !cart.redact">
-                            
+                            <p class="cart__date">{{ String(new Date(this.cart.date)).substr(4, 11) }} </p>    
+                            <button v-show="cart.status !== 4" class="icon_btn icon_btn--pen" @click="cart.redact = !cart.redact">
                                 <img class="icon" src="/assets/pen.png" >
                             </button>
                         </div> 
-                         <p> {{cart.name}} </p>
+                         <p class="cart__name"> {{cart.name}} </p>
                         <div class="cart__content">
                             <p class="cart__subtitle">{{cart.subtitle}}</p>
-                            <p v-show="cart.message" class="cart__subtitle">
+                            <p v-show="cart.message && cart.status !== 4">Сообщение от тестера:</p>
+                            <p v-show="cart.message && cart.status !== 4" class="cart__subtitle cart__subtitle--test">  
                                 {{cart.message}}
                             </p>
                             <div class="cart__list">
@@ -121,22 +115,62 @@ Vue.component('cart', {
                         </div> 
                     </div>
                     <div v-else>
-                        <custom-form></custom-form>
+                         <form @submit.prevent="redacted()" class="form">
+                            <p>Редактирование</p>
+                            <label>
+                            Название
+                                <input type="text" class="form__input" v-model="formData.name" :disabled="cart.messageAdd">
+                            </label>
+                            <label>
+                            Описание
+                                <input type="text" class="form__input" v-model="formData.subtitle" :disabled="cart.messageAdd">
+                            </label>
+                            <label>
+                            Последний срок
+                                <input type="date" class="form__input" v-model="formData.deadline" :disabled="cart.messageAdd">
+                            </label>
+                            <label v-show="cart.messageAdd">
+                            Комментарий о причине
+                                <textarea class="form__input area" v-model="formData.message" :required="cart.messageAdd" ></textarea>
+                            </label>
+                            <button type="submit"  class="form__button">СОХРАНИТЬ ДАННЫЕ</button>
+                         </form>
                     </div>
                 </article>
               `,
     data() {
         return {
             name: 'name',
-            redact: false,
+            formData:{
+                name: this.cart.name,
+                subtitle: this.cart.subtitle,
+                deadline: this.cart.deadline,
+                message: this.cart.message,
+            }
         }
     },
     methods:{
+        redacted(){
+            this.cart.redact = false;
+            this.cart.messageAdd = false;
+            eventBus.$emit('redact-cart', this.cart, this.formData);
+            console.log('submit')
+        },
         deleteCart() {
             eventBus.$emit('delete-cart', this.cart);
         },
+        messageAdd(){
+            this.cart.redact = true;
+            this.cart.messageAdd = true;
+            this.cart.status -= 1;
+        },
         mooveCart(i) {
-            this.cart.status += i;
+            if (this.cart.status === 3 && i === -1) {
+                this.messageAdd();
+            }
+            else {
+                this.cart.status += i;
+            }
             eventBus.$emit('save');
         },
     },
@@ -155,8 +189,8 @@ Vue.component('board', {
                 <div class="board">
                      <div class="board__header">
                         <h1>{{board.name}}</h1>
-                        <p>{{getCart().length}}</p>
                      </div>
+                     <button v-if="board.id === 1" @click="modal" class="board__button">Добавить задачу</button>
                      <template v-if="getCart().length">
                         <div class="board__list">
                             <template v-for="item in getCart()">
@@ -165,11 +199,8 @@ Vue.component('board', {
                         </div>
                      </template>
                      <template v-else>
-                        <p>нет ничего</p>
+                        <p class="board__sub">нет ничего</p>
                      </template>
-                    <div v-if="board.id === 1">
-                        <button @click="modal" class="board__button">Добавить задачу</button>
-                    </div>
                 </div>
               `,
     data() {
@@ -203,6 +234,7 @@ let app = new Vue({
                 status: 1,
                 message: '',
                 redact: false,
+                messageAdd: false,
             },
             {
                 id: 2,
@@ -213,6 +245,7 @@ let app = new Vue({
                 status: 1,
                 message: '',
                 redact: false,
+                messageAdd: false,
             },
             {
                 id: 3,
@@ -223,6 +256,7 @@ let app = new Vue({
                 status: 1,
                 message: '',
                 redact: false,
+                messageAdd: false,
             },
         ],
         boards: [
@@ -244,6 +278,15 @@ let app = new Vue({
         save(){
             localStorage.setItem('cart', JSON.stringify(this.cart));
         },
+        redactCart(cart, data){
+            Object.keys(cart).forEach(item => {
+                if (data[item]){
+                    cart[item] = data[item];
+                }
+            });
+            this.save();
+            console.log(cart)
+        }
 
 
     },
@@ -257,12 +300,7 @@ let app = new Vue({
         eventBus.$on('open-modal', () => this.forms = true);
         eventBus.$on('save', this.save);
         eventBus.$on('delete-cart', this.deleteCart);
-    },
-    computed:{
-        redact(){
-
-        }
-
+        eventBus.$on('redact-cart', this.redactCart);
     },
 })
 /*
