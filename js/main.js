@@ -43,6 +43,7 @@ Vue.component('custom-form', {
                 message: '',
                 redact: false,
                 messageAdd: false,
+                redactDate: '',
             }
         }
     },
@@ -80,7 +81,7 @@ Vue.component('cart', {
     },
     template: `
                 <article>
-                    <div class="cart" v-if="!cart.redact">
+                    <div :class="cartStyle()" v-if="!cart.redact">
                         <div class="moov">
                             <button v-if="cart.status === 3" class="arrow" @click="mooveCart(-1)">
                                 <img class="icon" style="transform: rotate(-180deg)" src="./assets/arrow.png">
@@ -95,6 +96,7 @@ Vue.component('cart', {
                                 <img class="icon" src="/assets/pen.png" >
                             </button>
                         </div> 
+                         <p v-show="cart.redactDate && cart.status !== 4" class="cart__redact">Последнее редактирование: {{String(cart.redactDate).substr(0, 10)}} </p>
                          <p class="cart__name"> {{cart.name}} </p>
                         <div class="cart__content">
                             <p class="cart__subtitle">{{cart.subtitle}}</p>
@@ -103,11 +105,11 @@ Vue.component('cart', {
                                 {{cart.message}}
                             </p>
                             <div class="cart__list">
-                                <div class="cart__listBlock">
+                                <div class="cart__listBlock" v-show="cart.status !== 4"> 
                                     <img src="/assets/flag.png" class="cart__deadflag">
                                     <p>{{ (( new Date(this.cart.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60)).toFixed(0) }} ч. осталось</p>
                                 </div>
-                                <button class="icon_btn icon_btn--delete" @click="deleteCart">
+                                <button class="icon_btn icon_btn--delete" @click="deleteCart" v-show="cart.status !== 4">
                                     <img class="icon" src="/assets/delete.png">
                                 </button>
                                 
@@ -150,9 +152,18 @@ Vue.component('cart', {
         }
     },
     methods:{
+        cartStyle(){
+            if(this.cart.status === 4){
+                return (( new Date(this.cart.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60)).toFixed(0) > 0? 'cart' : 'cart cart--danger'
+            }
+            else {
+                return 'cart'
+            }
+        },
         redacted(){
             this.cart.redact = false;
             this.cart.messageAdd = false;
+            this.cart.redactDate = new Date();
             eventBus.$emit('redact-cart', this.cart, this.formData);
             console.log('submit')
         },
@@ -182,7 +193,7 @@ Vue.component('cart', {
 Vue.component('board', {
     props: {
         cart:{type: Array},
-        index:{ type: Number},
+        index:{type: Number},
         board:{type: Array},
     },
     template: `
@@ -235,6 +246,7 @@ let app = new Vue({
                 message: '',
                 redact: false,
                 messageAdd: false,
+                redactDate: '',
             },
             {
                 id: 2,
@@ -246,6 +258,7 @@ let app = new Vue({
                 message: '',
                 redact: false,
                 messageAdd: false,
+                redactDate: '',
             },
             {
                 id: 3,
@@ -257,6 +270,7 @@ let app = new Vue({
                 message: '',
                 redact: false,
                 messageAdd: false,
+                redactDate: '',
             },
         ],
         boards: [
