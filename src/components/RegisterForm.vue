@@ -41,6 +41,7 @@ const registerUser = () => {
       </the-button>
       <div class="to-register">
         <p>У вас есть аккаунт?</p>
+        <form></form>
         <router-link to="/auth/login" class="link">Войти</router-link>
       </div>
     </form>

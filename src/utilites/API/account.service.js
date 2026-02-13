@@ -1,12 +1,19 @@
 import { api } from './api'
+import router from "@/router/index.js";
 
 
 export const accountService = {
-    login: (data) =>
-        api.post('login', data).then(response => response.data).then( (data) => { localStorage.setItem('token', JSON.stringify(data.data.user_token)) } ),
-
     register: (data) =>
-        api.post('signup', data).then(response => response.data).then( (data) => { localStorage.setItem('token', JSON.stringify(data.data.user_token)) } ),
+        api.post('signup', data).then(response => {
+            response.data
+            router.push('/auth/login')
+        }),
+
+    login: (data) =>
+        api.post('login', data).then(response => response.data).then( (data) => {
+            localStorage.setItem('token', JSON.stringify(data.data.user_token))
+            router.push('/')
+        }),
 
     logout: (data) =>
         api.get('logout'),

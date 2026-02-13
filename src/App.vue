@@ -1,6 +1,16 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import {RouterLink, RouterView, useRouter} from 'vue-router'
 import TheButton from "@/components/shared/UI/button/theButton.vue";
+import {computed} from "vue";
+import {useUsersStore} from "@/stores/userStor.js";
+import {accountService} from "@/utilites/API/account.service.js";
+
+const userToken = useUsersStore().userToken
+
+const logoutUser = () => {
+  accountService.logout()
+}
+
 </script>
 
 <template>
@@ -12,7 +22,7 @@ import TheButton from "@/components/shared/UI/button/theButton.vue";
           <RouterLink class="link" to="/">Главная</RouterLink>
         </the-button>
         </div>
-        <div class="header_auth">
+        <div class="header_auth" v-if="!userToken">
           <the-button>
             <RouterLink class="link" to="/auth/login">Войти</RouterLink>
           </the-button>
@@ -21,8 +31,11 @@ import TheButton from "@/components/shared/UI/button/theButton.vue";
           </the-button>
 
         </div>
-        <div v-show="false">
-          <RouterLink to="/cart">Корзина</RouterLink>
+        <div v-else class="header_auth">
+          <the-button>
+            <RouterLink class="link" to="/cart">Корзина</RouterLink>
+          </the-button>
+          <the-button @click="logoutUser()">выйти</the-button>
         </div>
       </nav>
     </div>
