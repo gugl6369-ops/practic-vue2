@@ -66,12 +66,15 @@ Vue.component('custom-form', {
                 id: new Date().toISOString() + Math.random() * 1000,
                 name: '',
                 subtitle: '',
+                date: new Date(),
                 deadline: '',
                 status: 1,
-                date: new Date(),
+                check: false,
                 message: '',
+                redact: false,
+                messageAdd: false,
+                redactDate: [],
                 prioritet: 0,
-                redactDate: []
             }
         },
         modal() {
@@ -111,9 +114,9 @@ Vue.component('cart', {
                         </div> 
                         <div v-show="cart.redactDate.length && cart.status !== 4" class="cart__redact">
                              <p> Редактирования: </p>
-                             <div v-show="cart">
-                                <p v-for="item in cart.redactDate">{{item.substr(11, 8)}}</p>
-                             </div>                         
+                             <select class="form__input" name="lol" :value="cart.redactDate[cart.redactDate.length - 1]">
+                                <option v-for="(item, index) in cart.redactDate " selected :value="item">{{item}}</option>
+                             </select>                       
                         </div>
                          <p class="cart__name"> {{cart.name}} </p>
                         <div class="cart__content">
