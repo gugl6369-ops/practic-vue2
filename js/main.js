@@ -84,16 +84,16 @@ Vue.component('cart', {
                     <div :class="cartStyle()" v-if="!cart.redact">
                         <div class="moov">
                             <button v-if="cart.status === 3" class="arrow" @click="mooveCart(-1)">
-                                <img class="icon" style="transform: rotate(-180deg)" src="./assets/arrow.png">
+                                <img class="icon" style="transform: rotate(-180deg)" src="assets/arrow.png">
                             </button>
                             <button v-if="cart.status < 4" class="arrow" @click="mooveCart(1)">
-                                <img class="icon" src="./assets/arrow.png">
+                                <img class="icon" src="assets/arrow.png">
                             </button>
                         </div>
                         <div class="cart_header">
                             <p class="cart__date">{{ String(new Date(this.cart.date)).substr(4, 11) }} </p>    
                             <button v-show="cart.status !== 4" class="icon_btn icon_btn--pen" @click="cart.redact = !cart.redact">
-                                <img class="icon" src="/assets/pen.png" >
+                                <img class="icon" src="assets/pen.png" >
                             </button>
                         </div> 
                          <p v-show="cart.redactDate && cart.status !== 4" class="cart__redact">Последнее редактирование: {{String(cart.redactDate).substr(0, 10)}} </p>
@@ -106,11 +106,11 @@ Vue.component('cart', {
                             </p>
                             <div class="cart__list">
                                 <div class="cart__listBlock" v-show="cart.status !== 4"> 
-                                    <img src="/assets/flag.png" class="cart__deadflag">
+                                    <img src="assets/flag.png" class="cart__deadflag">
                                     <p>{{ (( new Date(this.cart.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60)).toFixed(0) }} ч. осталось</p>
                                 </div>
                                 <button class="icon_btn icon_btn--delete" @click="deleteCart" v-show="cart.status !== 4">
-                                    <img class="icon" src="/assets/delete.png">
+                                    <img class="icon" src="assets/delete.png">
                                 </button>
                                 
                             </div> 
