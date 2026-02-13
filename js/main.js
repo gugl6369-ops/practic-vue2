@@ -25,6 +25,16 @@ Vue.component('custom-form', {
                         deadline:
                             <input type="date" class="form__input" v-model="formData.deadline" required>
                         </label>
+                        <label>
+                        Приоритет:
+                            <select class="form__input" v-model="formData.prioritet" name="lol" required>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </label>
                         <button type="submit" class="form__button">Сохранить</button>
                     </form>
                  </div>
@@ -43,7 +53,8 @@ Vue.component('custom-form', {
                 message: '',
                 redact: false,
                 messageAdd: false,
-                redactDate: '',
+                redactDate: [],
+                prioritet: 0,
             }
         }
     },
@@ -59,6 +70,8 @@ Vue.component('custom-form', {
                 status: 1,
                 date: new Date(),
                 message: '',
+                prioritet: 0,
+                redactDate: []
             }
         },
         modal() {
@@ -96,7 +109,12 @@ Vue.component('cart', {
                                 <img class="icon" src="assets/pen.png" >
                             </button>
                         </div> 
-                         <p v-show="cart.redactDate && cart.status !== 4" class="cart__redact">Последнее редактирование: {{String(cart.redactDate).substr(0, 10)}} </p>
+                        <div v-show="cart.redactDate.length && cart.status !== 4" class="cart__redact">
+                             <p> Редактирования: </p>
+                             <div v-show="cart">
+                                <p v-for="item in cart.redactDate">{{item.substr(11, 8)}}</p>
+                             </div>                         
+                        </div>
                          <p class="cart__name"> {{cart.name}} </p>
                         <div class="cart__content">
                             <p class="cart__subtitle">{{cart.subtitle}}</p>
@@ -108,6 +126,9 @@ Vue.component('cart', {
                                 <div class="cart__listBlock" v-show="cart.status !== 4"> 
                                     <img src="assets/flag.png" class="cart__deadflag">
                                     <p>{{ (( new Date(this.cart.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60)).toFixed(0) }} ч. осталось</p>
+                                </div>
+                                <div class="cart__listBlock">
+                                    <p>{{cart.prioritet}}</p>
                                 </div>
                                 <button class="icon_btn icon_btn--delete" @click="deleteCart" v-show="cart.status !== 4">
                                     <img class="icon" src="assets/delete.png">
@@ -163,7 +184,7 @@ Vue.component('cart', {
         redacted(){
             this.cart.redact = false;
             this.cart.messageAdd = false;
-            this.cart.redactDate = new Date();
+            this.cart.redactDate.push(new Date().toISOString());
             eventBus.$emit('redact-cart', this.cart, this.formData);
             console.log('submit')
         },
@@ -204,7 +225,7 @@ Vue.component('board', {
                      <button v-if="board.id === 1" @click="modal" class="board__button">Добавить задачу</button>
                      <template v-if="getCart().length">
                         <div class="board__list">
-                            <template v-for="item in getCart()">
+                            <template v-for="item in getCart().sort((a, b) => b.prioritet - a.prioritet)">
                                 <cart :cart="item"></cart>
                             </template>
                         </div>
@@ -246,7 +267,8 @@ let app = new Vue({
                 message: '',
                 redact: false,
                 messageAdd: false,
-                redactDate: '',
+                redactDate: [],
+                prioritet: 1,
             },
             {
                 id: 2,
@@ -258,7 +280,8 @@ let app = new Vue({
                 message: '',
                 redact: false,
                 messageAdd: false,
-                redactDate: '',
+                redactDate: [],
+                prioritet: 3,
             },
             {
                 id: 3,
@@ -270,7 +293,8 @@ let app = new Vue({
                 message: '',
                 redact: false,
                 messageAdd: false,
-                redactDate: '',
+                redactDate: [],
+                prioritet: 2,
             },
         ],
         boards: [
