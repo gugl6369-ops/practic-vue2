@@ -185,11 +185,16 @@ Vue.component('cart', {
             }
         },
         redacted(){
-            this.cart.redact = false;
-            this.cart.messageAdd = false;
-            this.cart.redactDate.push(new Date().toISOString());
-            eventBus.$emit('redact-cart', this.cart, this.formData);
-            console.log('submit')
+            if ( this.formData.name !== this.cart.name || this.formData.subtitle !== this.cart.subtitle || this.formData.deadline !== this.cart.deadline && this.formData.message !== this.cart.message ){
+                this.cart.redact = false;
+                this.cart.messageAdd = false;
+                this.cart.redactDate.push(new Date().toISOString());
+                eventBus.$emit('redact-cart', this.cart, this.formData);
+            }
+            else{
+                this.cart.redact = false;
+                console.log('не сменилось ничего')
+            }
         },
         deleteCart() {
             eventBus.$emit('delete-cart', this.cart);
