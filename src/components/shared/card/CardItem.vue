@@ -42,9 +42,11 @@
         <template v-if="count > 1"> за {{count}} </template>
 
       </div>
-      <button v-if="role === 'card'" class="buy-button" @click="cartAdd" >Положить в корзину</button>
-      <button v-else class="buy-button" @click="cartDelete">Удалить из корзины</button>
-    </div>
+      <div v-show="store.userToken">
+        <button v-if="role === 'card'" class="buy-button" @click="cartAdd" >Положить в корзину</button>
+        <button v-else class="buy-button" @click="cartDelete">Удалить из корзины</button>
+      </div>
+      </div>
   </div>
 </template>
 <style scoped>

@@ -21,9 +21,7 @@ export const accountService = {
         }),
 
     logout: (data) =>
-        api.get('logout').catch(error => {
-            alert('')
-        }),
+        api.get('logout'),
 
     cart: (data) =>
         api.get('cart', data).then(response => response.data.data),

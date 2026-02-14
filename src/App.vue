@@ -4,6 +4,7 @@ import TheButton from "@/components/shared/UI/button/theButton.vue";
 import {computed, onMounted} from "vue";
 import {useUsersStore} from "@/stores/userStor.js";
 import {accountService} from "@/utilites/API/account.service.js";
+import router from "@/router/index.js";
 
 const userToken = useUsersStore()
 
@@ -18,6 +19,7 @@ const logoutUser = async () => {
   localStorage.removeItem("token")
   userToken.clearUserToken()
   alert('вы вышли из аккакунта успешно!')
+  router.push('/')
 }
 
 </script>

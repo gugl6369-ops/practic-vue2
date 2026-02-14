@@ -17,21 +17,21 @@ const router = createRouter({
           path: '/auth/login',
           name: 'Авторизация',
           component: () => import('@/components/LoginForm.vue'),
-          meta: { title: 'Авторизация' },
+          meta: { requiresAuth: false },
         },
         {
           path: '/auth/register',
           name: 'Регистрация',
           component: () => import('@/components/RegisterForm.vue'),
-          meta: { title: 'Регистрация' },
+          meta: { requiresAuth: false },
         },
       ]
     },
-
     {
       path: '/cart',
       name: 'Корзина',
       component: () => import('@/views/CartView.vue'),
+      meta: { requiresAuth: true },
     },
   ],
 

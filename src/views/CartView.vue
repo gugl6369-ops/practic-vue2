@@ -15,16 +15,21 @@ const cardsBasket = useUsersStore()
   }
 
   const uniqueItems = computed(() => {
-    const map = new Map()
-    cardsBasket.list.forEach(item => {
-      const key = item.product_id
-      if (map.has(key)) {
-        map.get(key).count++
-      } else {
-        map.set(key, { ...item, count: 1 })
-      }
-    })
-    return Array.from(map.values())
+    if (cardsBasket.cartList) {
+      const map = new Map()
+      cardsBasket.list.forEach(item => {
+        const key = item.product_id
+        if (map.has(key)) {
+          map.get(key).count++
+        } else {
+          map.set(key, { ...item, count: 1 })
+        }
+      })
+      return Array.from(map.values())
+    }
+    else {
+      return 0
+    }
   })
 
 </script>
