@@ -18,7 +18,7 @@
   <main>
     <div class="card_list">
       <template v-for="card in cards.list" :key="card.id" >
-        <card-item  :card></card-item>
+        <card-item  role="card" :card></card-item>
       </template>
     </div>
   </main>

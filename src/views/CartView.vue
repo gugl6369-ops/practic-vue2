@@ -9,6 +9,8 @@ const cardsBasket = useUsersStore()
 onMounted(async () => {
   cardsBasket.cartList()
 })
+
+
 </script>
 
 <template>

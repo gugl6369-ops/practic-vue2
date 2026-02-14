@@ -20,5 +20,11 @@ export const accountService = {
         api.get('logout'),
 
     cart: (data) =>
-        api.get('cart', data).then(response => response.data),
+        api.get('cart', data).then(response => response.data.data),
+
+    cartDelete: (id) =>
+        api.delete(`cart/${id}`).then(response => response.data),
+
+    cartAdd: (id) =>
+        api.post(`cart/${id}`).then(response => response.data),
 }

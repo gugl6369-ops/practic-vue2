@@ -13,8 +13,11 @@ onMounted(() => {
   userToken.setUserToken(token);
 })
 
-const logoutUser = () => {
-  accountService.logout()
+const logoutUser = async () => {
+  await accountService.logout()
+  localStorage.removeItem("token")
+  userToken.clearUserToken()
+  alert('вы вышли из аккакунта успешно!')
 }
 
 </script>

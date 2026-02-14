@@ -18,8 +18,6 @@ const loginUser =  async () => {
   userStor.setUserToken(token.user_token)
 }
 
-
-
 </script>
 
 <template>

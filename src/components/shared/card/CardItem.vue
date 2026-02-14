@@ -1,10 +1,22 @@
 <script setup>
 
+  import {useUsersStore} from "@/stores/userStor.js";
+  import {accountService} from "@/utilites/API/account.service.js";
+
   const mediaUrl = import.meta.env.VITE_MEDIA_URL
 
-  defineProps({
+  const IProps = defineProps({
     card: Object,
+    role: 'card' || 'cart',
   })
+
+  const cartDelete = async () => {
+    await accountService.cartDelete(IProps.card.id)
+  }
+
+  const cartAdd =  async () => {
+    await accountService.cartAdd(IProps.card.id)
+  }
 
 </script>
 
@@ -18,7 +30,8 @@
         {{ card.price }}
         <span class="price-currency">₽</span>
       </div>
-      <button class="buy-button">Положить в корзину</button>
+      <button v-if="role === 'card'" class="buy-button" @click="cartAdd" >Положить в корзину</button>
+      <button v-else class="buy-button" @click="cartDelete">Удалить из корзины</button>
     </div>
   </div>
 </template>
