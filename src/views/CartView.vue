@@ -40,7 +40,7 @@ const cardsBasket = useUsersStore()
     />
   </div>
   <div v-else>
-    <p>Нет в корзине ничего</p>
+    <h2>Нет в корзине ничего</h2>
   </div>
 </template>
 
@@ -54,6 +54,14 @@ const cardsBasket = useUsersStore()
 h1{
   text-align: center;
   font-size: 50px;
+  color: #ff3b30;
+  font-weight: bold;
+  text-shadow: 0px 5px 15px rgba(243, 48, 48, 0.56);
+}
+h2{
+  padding-top: 150px;
+  text-align: center;
+  font-size: 24px;
   color: #ff3b30;
   font-weight: bold;
   text-shadow: 0px 5px 15px rgba(243, 48, 48, 0.56);
