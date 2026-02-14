@@ -10,7 +10,7 @@ export const useUsersStore = defineStore('user', () => {
     const list = ref([])
 
     const cartList = async () => {
-        list.value = await productService.products()
+        list.value = await accountService.cart()
     }
 
     return {userToken, list, cartList};

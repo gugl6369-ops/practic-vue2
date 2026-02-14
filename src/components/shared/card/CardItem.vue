@@ -1,8 +1,11 @@
 <script setup>
+
   const mediaUrl = import.meta.env.VITE_MEDIA_URL
+
   defineProps({
-    card: Array,
+    card: Object,
   })
+
 </script>
 
 <template>
