@@ -4,14 +4,21 @@ import TheButton from "@/components/shared/UI/button/theButton.vue";
 import TheInput from "@/components/shared/UI/input/TheInput.vue";
 import {reactive} from "vue";
 import {accountService} from "@/utilites/API/account.service.js";
+import {useUsersStore} from "@/stores/userStor.js";
 
 const loginUserForm = reactive({
   email: "",
   password: "",
 })
-const loginUser = () => {
-  accountService.login(loginUserForm)
+
+ const userStor = useUsersStore()
+
+const loginUser =  async () => {
+  const token = await accountService.login(loginUserForm)
+  userStor.setUserToken(token.user_token)
 }
+
+
 
 </script>
 

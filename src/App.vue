@@ -1,11 +1,17 @@
 <script setup>
 import {RouterLink, RouterView, useRouter} from 'vue-router'
 import TheButton from "@/components/shared/UI/button/theButton.vue";
-import {computed} from "vue";
+import {computed, onMounted} from "vue";
 import {useUsersStore} from "@/stores/userStor.js";
 import {accountService} from "@/utilites/API/account.service.js";
 
-const userToken = useUsersStore().userToken
+const userToken = useUsersStore()
+
+
+onMounted(() => {
+  const token = JSON.parse(localStorage.getItem("token"));
+  userToken.setUserToken(token);
+})
 
 const logoutUser = () => {
   accountService.logout()
@@ -18,23 +24,31 @@ const logoutUser = () => {
     <div class="wrapper">
       <nav>
         <div>
-        <the-button>
-          <RouterLink class="link" to="/">Главная</RouterLink>
-        </the-button>
+          <RouterLink class="link" to="/">
+            <the-button>
+              Главная
+            </the-button>
+          </RouterLink>
         </div>
-        <div class="header_auth" v-if="!userToken">
-          <the-button>
-            <RouterLink class="link" to="/auth/login">Войти</RouterLink>
-          </the-button>
-          <the-button>
-            <RouterLink class="link" to="/auth/register">Зарегистрироваться</RouterLink>
-          </the-button>
+        <div class="header_auth" v-if="!userToken.userToken">
+          <RouterLink class="link" to="/auth/login">
+            <the-button>
+              Войти
+            </the-button>
+          </RouterLink>
+          <RouterLink class="link" to="/auth/register">
+            <the-button>
+              Зарегистрироваться
+            </the-button>
+          </RouterLink>
 
         </div>
         <div v-else class="header_auth">
-          <the-button>
-            <RouterLink class="link" to="/cart">Корзина</RouterLink>
-          </the-button>
+          <RouterLink class="link" to="/cart">
+            <the-button>
+              Корзина
+            </the-button>
+          </RouterLink>
           <the-button @click="logoutUser()">выйти</the-button>
         </div>
       </nav>

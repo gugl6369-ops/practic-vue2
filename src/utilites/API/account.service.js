@@ -13,6 +13,7 @@ export const accountService = {
         api.post('login', data).then(response => response.data).then( (data) => {
             localStorage.setItem('token', JSON.stringify(data.data.user_token))
             router.push('/')
+            return data.data
         }),
 
     logout: (data) =>

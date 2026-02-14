@@ -5,7 +5,13 @@ import {productService} from "@/utilites/API/content.service.js";
 
 export const useUsersStore = defineStore('user', () => {
 
-    const userToken = localStorage.getItem('token')
+    const userToken = ref(null)
+    const setUserToken = (token) => {
+        userToken.value = token;
+    }
+    const clearUserToken = () => {
+        userToken.value = null;
+    }
 
     const list = ref([])
 
@@ -13,5 +19,5 @@ export const useUsersStore = defineStore('user', () => {
         list.value = await accountService.cart()
     }
 
-    return {userToken, list, cartList};
+    return {userToken, list, cartList, clearUserToken, setUserToken};
 })

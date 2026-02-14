@@ -16,12 +16,10 @@
 
 <template>
   <main>
-    <p>каталог</p>
     <div class="card_list">
       <template v-for="card in cards.list" :key="card.id" >
         <card-item  :card></card-item>
       </template>
-
     </div>
   </main>
 </template>
