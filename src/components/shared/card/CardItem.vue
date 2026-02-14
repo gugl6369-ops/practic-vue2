@@ -8,27 +8,38 @@
   const IProps = defineProps({
     card: Object,
     role: 'card' || 'cart',
+    count: Number,
   })
 
   const cartDelete = async () => {
     await accountService.cartDelete(IProps.card.id)
+
   }
 
   const cartAdd =  async () => {
     await accountService.cartAdd(IProps.card.id)
   }
 
+
+
 </script>
 
 <template>
   <div class="product-card">
-    <img  class="product-image" :src="mediaUrl+card.image" />
-    <h2 class="product-name">{{ card.name }}</h2>
+    <img  class="product-image" :src="mediaUrl+card.image" alt="товар"/>
+    <h2 class="product-name">{{ card.name }}<span v-if="count">{{ '  (' + count + ')' }}</span></h2>
     <p class="product-description">{{ card.description }}</p>
     <div class="product-footer">
-      <div class="product-price">
-        {{ card.price }}
+      <div class="product-price" >
+        <template v-if="count">
+          {{ card.price * count }}
+        </template>
+        <template v-else>
+        {{ card.price}}
+        </template>
         <span class="price-currency">₽</span>
+        <template v-if="count > 1"> за {{count}} </template>
+
       </div>
       <button v-if="role === 'card'" class="buy-button" @click="cartAdd" >Положить в корзину</button>
       <button v-else class="buy-button" @click="cartDelete">Удалить из корзины</button>

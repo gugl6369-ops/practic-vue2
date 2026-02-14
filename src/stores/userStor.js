@@ -19,5 +19,7 @@ export const useUsersStore = defineStore('user', () => {
         list.value = await accountService.cart()
     }
 
+
+
     return {userToken, list, cartList, clearUserToken, setUserToken};
 })
