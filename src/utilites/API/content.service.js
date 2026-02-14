@@ -1,6 +1,6 @@
 import {api} from "@/utilites/API/API.js";
 
-export const accountService = {
+export const productService = {
     products: (data) =>
-        api.get('products', data).then(response => response.data),
+        api.get('products', data).then(response => response.data.data),
 }

@@ -3,15 +3,15 @@ import { defineStore } from 'pinia'
 import {accountService} from "@/utilites/API/account.service.js";
 import {productService} from "@/utilites/API/content.service.js";
 
-export const useUsersStore = defineStore('user', () => {
-
-    const userToken = localStorage.getItem('token')
+export const useProductStore = defineStore('product', () => {
 
     const list = ref([])
 
-    const cartList = async () => {
+    const productsList = async () => {
         list.value = await productService.products()
     }
 
-    return {userToken, list, cartList};
+
+
+    return {list, productsList};
 })

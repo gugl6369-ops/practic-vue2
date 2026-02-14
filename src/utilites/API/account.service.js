@@ -1,4 +1,4 @@
-import { api } from './api'
+import { api } from './API.js'
 import router from "@/router/index.js";
 
 

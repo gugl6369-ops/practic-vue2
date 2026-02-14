@@ -13,15 +13,18 @@ defineProps({
 
 <style lang="scss" scoped>
 button{
-  width: 100%;
-  padding: 10px 20px;
-  border-radius: 15px;
-  border: 2px dashed black;
-  font-size: 1rem;
-  background-color: #ba2828;
-  cursor: pointer;
-  transition: .3s;
+  background: #ff3b30;
   color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
 
   &:hover{
     background-color: #000000;

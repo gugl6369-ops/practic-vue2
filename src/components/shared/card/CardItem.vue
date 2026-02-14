@@ -1,37 +1,39 @@
+<script setup>
+  const mediaUrl = import.meta.env.VITE_MEDIA_URL
+  defineProps({
+    card: Array,
+  })
+</script>
+
 <template>
   <div class="product-card">
-    <span class="product-badge">Хит продаж</span>
-    <span class="product-category">Категория товара</span>
-    <h2 class="product-name">Product name 2</h2>
-    <p class="product-description">Product description 2</p>
-
+    <img  class="product-image" :src="mediaUrl+card.image" />
+    <h2 class="product-name">{{ card.name }}</h2>
+    <p class="product-description">{{ card.description }}</p>
     <div class="product-footer">
       <div class="product-price">
-        200
+        {{ card.price }}
         <span class="price-currency">₽</span>
       </div>
-      <button class="buy-button">Купить</button>
+      <button class="buy-button">Положить в корзину</button>
     </div>
   </div>
 </template>
 <style scoped>
-
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(145deg, #f5f5f5 0%, #e8e8e8 100%);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
+.product-image{
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
 }
 
 .product-card {
   background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   border-radius: 20px;
   padding: 24px;
-  max-width: 320px;
   width: 100%;
   box-shadow: 0 10px 30px rgba(255, 59, 48, 0.15);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -71,10 +73,10 @@ body {
 }
 
 .product-footer {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 16px;
 }
 
 .product-price {
@@ -142,3 +144,5 @@ body {
   }
 }
 </style>
+<script setup lang="ts">
+</script>
