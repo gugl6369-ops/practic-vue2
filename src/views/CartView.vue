@@ -46,6 +46,7 @@ const cardsBasket = useUsersStore()
 
 <style>
 .card_list{
+  padding: 50px 100px;
   display: grid;
   grid-template-columns: repeat(4, 2fr);
   gap: 25px

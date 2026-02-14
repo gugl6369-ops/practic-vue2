@@ -7,6 +7,8 @@ export const accountService = {
         api.post('signup', data).then(response => {
             response.data
             router.push('/auth/login')
+        }).catch(error => {
+            alert('Ошибки валидации полей!')
         }),
 
     login: (data) =>
@@ -14,10 +16,14 @@ export const accountService = {
             localStorage.setItem('token', JSON.stringify(data.data.user_token))
             router.push('/')
             return data.data
+        }).catch(error => {
+            alert('Неправильные логин или пароль!')
         }),
 
     logout: (data) =>
-        api.get('logout'),
+        api.get('logout').catch(error => {
+            alert('')
+        }),
 
     cart: (data) =>
         api.get('cart', data).then(response => response.data.data),

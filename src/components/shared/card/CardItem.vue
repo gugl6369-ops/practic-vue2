@@ -4,6 +4,7 @@
   import {accountService} from "@/utilites/API/account.service.js";
 
   const mediaUrl = import.meta.env.VITE_MEDIA_URL
+  const store = useUsersStore()
 
   const IProps = defineProps({
     card: Object,
@@ -13,7 +14,7 @@
 
   const cartDelete = async () => {
     await accountService.cartDelete(IProps.card.id)
-
+    store.cartList()
   }
 
   const cartAdd =  async () => {

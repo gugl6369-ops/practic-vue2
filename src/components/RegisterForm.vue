@@ -41,14 +41,14 @@ const registerUser = () => {
       </the-button>
       <div class="to-register">
         <p>У вас есть аккаунт?</p>
-        <form></form>
         <router-link to="/auth/login" class="link">Войти</router-link>
       </div>
     </form>
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss" >
+
 input{
   border: 1px solid #b52e2e;
   border-radius: 20px;
@@ -75,6 +75,9 @@ input{
   background: white;
   border-radius: 24px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05), 0 6px 12px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .title {
